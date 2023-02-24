@@ -27,7 +27,6 @@ class Database {
                 if (err) {
                     return reject(err);
                 }
-
                 if (!result || !result[0]) {
                     return reject(new Error('Invalid db response'));
                 }
