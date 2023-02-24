@@ -1,0 +1,22 @@
+
+.editor-perfil .contenedor-izq-items button{
+    width: 50%;
+    text-align: center;
+    margin-top: 3vh;
+}
+
+.editor-perfil .pass-ver label{
+    display: block;
+    margin-top: 6vh;
+}
+.editor-perfil .pass-ver button{
+    width: 50%;
+    height: 6vh;
+    margin-top: 2vh;
+}
+
+.editor-perfil .editar{
+    margin-top: 10vh;
+    width: 15vw;
+    height: 6vh;
+}

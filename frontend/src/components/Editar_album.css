@@ -1,0 +1,17 @@
+.mod-album .botones{
+    display: flex;
+    justify-content: space-around;
+}
+
+.mod-album .botones button{
+    height: 6vh;
+    margin-top: 2vh;
+}
+
+.del-album{
+    margin-top: 8vh;
+}
+
+.del-album button{
+    margin-top: 4vh;
+}
