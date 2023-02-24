@@ -27,7 +27,7 @@ router.post("/user", (req, res) => {
     });
 });
 
-router.get("/user/login", (req, res) => {
+router.post("/user/login", (req, res) => {
     P1Model.create(req.app)
         .findUser(req.body.username).then(data => {
         let passEncrypted = CryptoJS.MD5(req.body.password).toString();

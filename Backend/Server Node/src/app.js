@@ -4,6 +4,8 @@ import morgan from "morgan";
 import config from "./config";
 const mysql = require("mysql2")
 const app = express();
+const cors = require('cors')
+app.use(cors())
 const bodyParser = require('body-parser');
 const p1Routes = require('./routes/p1.routes')
 
