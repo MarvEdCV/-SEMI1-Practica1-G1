@@ -101,16 +101,19 @@ ERROR
     "errorMessage": "contraseña incorrecta"
 }
 
+[GET]
+http://localhost:3010/api/user
+Ejemplo de body:
+{
+    "username": "user-postmanf"
+}
 posibles respuestas:
 EXITO
 [
     {
         "username": "user-postmanf",
-        "password": "5799c50aa4af76105cfaa6c8b90dd8e0",
-        "created_at": "2023-02-24T11:26:21.000Z",
-        "updated_at": "2023-02-25T07:12:23.000Z",
-        "deleted_at": null,
-        "name": "defaultname"
+        "name": "defaultname",
+        "picture_profile": "https://cdn-icons-png.flaticon.com/512/9002/9002438.png"
     }
 ]
 ERROR
