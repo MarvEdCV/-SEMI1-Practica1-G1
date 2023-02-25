@@ -56,7 +56,7 @@ router.post("/user/login", (req, res) => {
 
 router.get("/user", (req, res) => {
     P1Model.create(req.app)
-        .findUser(req.body.username).then(data => {
+        .getUser(req.body.username).then(data => {
             if(data.length > 0){
                 return res.status(httpCode.OK).json(data);
             }

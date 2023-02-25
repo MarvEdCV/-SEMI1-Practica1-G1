@@ -16,6 +16,10 @@ class P1Model extends Database{
         return this.queryView({sql: `SELECT * FROM user WHERE username = '${userName}' AND deleted_at IS NULL`});
     }
 
+    getUser(userName){
+        return this.queryMultiple({sql: "CALL get_user(?)", params: [userName]});
+    }
+
 }
 
 module.exports = {P1Model};
