@@ -1,19 +1,22 @@
 import {Router} from "express";
 import httpCode from "http-status-codes";
 import CryptoJS from 'crypto-js';
+import S3 from '../aws/s3';
 
 import app from "../app";
 
 const {P1Model} = require("../models/p1.model.js");
 const router = Router();
+const uploader = new S3();
 
 router.get("/", (req, res) => {
     res.status(httpCode.OK).json({"Bienvenid@": "Esta es la API de NodeJs del Grupo 1 para la practica 1 - SEMINARIO DE SISTEMAS I"})
 })
 
-router.post("/user", (req, res) => {
+router.post("/user", async (req, res) => {
     //Todo: Aca es donde tengo que pasar la imagen de base 64 a url ya que la picture en el body vendra en base 64.
-    let url = req.body.picture;
+    const url = await uploader.uploadImage(req.body.picture, req.body.filename);
+    console.log(url);
     P1Model.create(req.app)
         .saveNewUser(req.body.username, req.body.password, url).then(data => {
         res.status(httpCode.OK).json(data);
