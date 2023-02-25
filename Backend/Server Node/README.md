@@ -51,8 +51,10 @@ El puerto normalmente en MYSQL es el ***3306***
 ### /api/login
 ```js
 [GET] -> verifica el logueo del usuario
+```
 
 ### /api/picture
+```js
 [POST] -> Guarda una foto nueva, hay que indicarle a que usuario pertenece y a que album de este usuario
 ```
 
