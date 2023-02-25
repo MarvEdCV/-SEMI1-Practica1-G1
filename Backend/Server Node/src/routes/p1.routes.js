@@ -15,7 +15,6 @@ router.get("/", (req, res) => {
 
 router.post("/user", async (req, res) => {
     const url = await uploader.uploadImage(req.body.picture, req.body.filename);
-    console.log(url);
     P1Model.create(req.app)
         .saveNewUser(req.body.username, req.body.name, req.body.password, url).then(data => {
         res.status(httpCode.OK).json(data);
@@ -64,6 +63,21 @@ router.get("/user", (req, res) => {
     }).catch(err => {
         console.log(err);
         res.status(httpCode.INTERNAL_SERVER_ERROR).json({"error": err});
+    });
+});
+
+router.put("/user", async (req, res) => {
+    const url = await uploader.uploadImage(req.body.picture, req.body.filename);
+    P1Model.create(req.app)
+        .updateUser(req.body.username, req.body.name, url).then(data => {
+        res.status(httpCode.OK).json(data);
+    }).catch(err => {
+        console.log(err);
+        res.status(httpCode.INTERNAL_SERVER_ERROR).json({
+            "sucessStatus": false,
+            "errorMessage": "Hubo un error en la actualizacion de usuario revise el servidor de Node",
+            "error": err
+        });
     });
 });
 

@@ -20,6 +20,10 @@ class P1Model extends Database{
         return this.queryMultiple({sql: "CALL get_user(?)", params: [userName]});
     }
 
+    updateUser(username,name,url){
+        return this.queryMultiple({sql: "CALL update_user(?,?,?)", params: [username,name,url]});
+    }
+
 }
 
 module.exports = {P1Model};
