@@ -179,4 +179,52 @@ ERROR
         "sql": "CALL new_album('marvedE','album2')"
     }
 }
+
+[PUT]
+http://localhost:3010/api/album
+Ejemplo de body:
+{
+    "username": "marved",
+    "albumName": "album2",
+    "newAlbumName": "updateAlbum2"
+}
+posibles respuestas:
+EXITO
+[
+    {
+        "successStatus": 1,
+        "errorMessage": null
+    }
+]
+ERROR
+[
+    {
+        "successStatus": 0,
+        "errorMessage": "No se pudo actualizar el ablum, probablemente no exista"
+    }
+]
+
+[DELETE]
+http://localhost:3010/api/album
+Ejemplo de body:
+{
+    "username": "marved",
+    "albumName": "album2",
+}
+posibles respuestas:
+EXITO
+[
+    {
+        "successStatus": 1,
+        "errorMessage": null
+    }
+]
+ERROR
+[
+    {
+        "successStatus": 0,
+        "errorMessage": "No se pudo eliminar el ablum, probablemente no exista"
+    }
+]
+
 ```

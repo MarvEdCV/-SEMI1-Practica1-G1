@@ -110,6 +110,34 @@ router.post("/album", async (req, res) => {
     });
 });
 
+router.put("/album", async (req, res) => {
+    P1Model.create(req.app)
+        .updateAlbum(req.body.username, req.body.albumName, req.body.newAlbumName).then(data => {
+        res.status(httpCode.OK).json(data);
+    }).catch(err => {
+        console.log(err);
+        res.status(httpCode.INTERNAL_SERVER_ERROR).json({
+            "sucessStatus": false,
+            "errorMessage": "Hubo un error en la actualizacion de album revise el servidor de Node",
+            "error": err
+        });
+    });
+});
+
+router.delete("/album", async (req, res) => {
+    P1Model.create(req.app)
+        .deleteAlbum(req.body.username, req.body.albumName).then(data => {
+        res.status(httpCode.OK).json(data);
+    }).catch(err => {
+        console.log(err);
+        res.status(httpCode.INTERNAL_SERVER_ERROR).json({
+            "sucessStatus": false,
+            "errorMessage": "Hubo un error en la eliminacion de album revise el servidor de Node",
+            "error": err
+        });
+    });
+});
+
 
 
 
