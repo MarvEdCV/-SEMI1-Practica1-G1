@@ -81,5 +81,36 @@ router.put("/user", async (req, res) => {
     });
 });
 
+router.post("/picture", async (req, res) => {
+    const url = await uploader.uploadImage(req.body.picture, req.body.filename);
+    P1Model.create(req.app)
+        .newPicture(req.body.username, req.body.albumName, url).then(data => {
+        res.status(httpCode.OK).json(data);
+    }).catch(err => {
+        console.log(err);
+        res.status(httpCode.INTERNAL_SERVER_ERROR).json({
+            "sucessStatus": false,
+            "errorMessage": "Hubo un error en la creación de foto revise el servidor de Node",
+            "error": err
+        });
+    });
+});
+
+router.post("/album", async (req, res) => {
+    P1Model.create(req.app)
+        .newAlbum(req.body.username, req.body.albumName).then(data => {
+        res.status(httpCode.OK).json(data);
+    }).catch(err => {
+        console.log(err);
+        res.status(httpCode.INTERNAL_SERVER_ERROR).json({
+            "sucessStatus": false,
+            "errorMessage": "Hubo un error en la creación de album revise el servidor de Node",
+            "error": err
+        });
+    });
+});
+
+
+
 
 module.exports = {router}

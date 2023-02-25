@@ -24,6 +24,14 @@ class P1Model extends Database{
         return this.queryMultiple({sql: "CALL update_user(?,?,?)", params: [username,name,url]});
     }
 
+    newPicture(username,albumName,url){
+        return this.queryMultiple({sql: "CALL new_picture(?,?,?)", params: [username,albumName,url]});
+    }
+
+    newAlbum(username,albumName){
+        return this.queryMultiple({sql: "CALL new_album(?,?)", params: [username,albumName]});
+    }
+
 }
 
 module.exports = {P1Model};

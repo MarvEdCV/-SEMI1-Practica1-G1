@@ -151,4 +151,32 @@ ERROR
         "sql": "CALL update_user('marveDd','Eduards','https://practica1-g1-imagenes-semi1.s3.amazonaws.com/messi-1677297805656-NodeJs.jpg')"
     }
 }
+
+[POST]
+http://localhost:3010/api/album
+Ejemplo de body:
+{
+    "username": "marved",
+    "albumName": "album2"
+}
+posibles respuestas:
+EXITO
+[
+    {
+        "successStatus": 1,
+        "errorMessage": null
+    }
+]
+ERROR
+{
+    "sucessStatus": false,
+    "errorMessage": "Hubo un error en la creación de album revise el servidor de Node",
+    "error": {
+        "code": "ER_NO_REFERENCED_ROW_2",
+        "errno": 1452,
+        "sqlState": "23000",
+        "sqlMessage": "Cannot add or update a child row: a foreign key constraint fails (`db-photobucket`.`album`, CONSTRAINT `album_user_username_fk` FOREIGN KEY (`username`) REFERENCES `user` (`username`))",
+        "sql": "CALL new_album('marvedE','album2')"
+    }
+}
 ```
