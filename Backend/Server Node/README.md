@@ -227,4 +227,61 @@ ERROR
     }
 ]
 
+[GET]
+http://localhost:3010/api/album
+Ejemplo de body:
+{
+    "username": "marved"
+}
+posibles respuestas:
+EXITO 
+{
+    "status": true,
+    "result": {
+        "album": {
+            "default-marved": [
+                {
+                    "url": "https://as2.ftcdn.net/v2/jpg/03/01/74/15/1000_F_301741517_3bvFxpxY3I74BrSFJT86Cqzz6p8cEBJ7.jpg"
+                },
+                {
+                    "url": "https://cdn-icons-png.flaticon.com/512/2780/2780137.png"
+                },
+                {
+                    "url": "https://cdn-icons-png.flaticon.com/512/9074/9074661.png"
+                },
+                {
+                    "url": "https://cdn-icons-png.flaticon.com/512/9757/9757636.png"
+                },
+                {
+                    "url": "https://cdn-icons-png.flaticon.com/512/2788/2788975.png"
+                },
+                {
+                    "url": "https://practica1-g1-imagenes-semi1.s3.amazonaws.com/elbicho-1677285813905-NodeJs.jpeg"
+                },
+                {
+                    "url": "https://practica1-g1-imagenes-semi1.s3.amazonaws.com/messi-1677297535885-NodeJs.jpg"
+                },
+                {
+                    "url": "https://practica1-g1-imagenes-semi1.s3.amazonaws.com/messi-1677297618972-NodeJs.jpg"
+                },
+                {
+                    "url": "https://practica1-g1-imagenes-semi1.s3.amazonaws.com/elrayomcuin-1677298931206-NodeJs.jpeg"
+                }
+            ],
+            "albumupdate1": [
+                {
+                    "url": "https://practica1-g1-imagenes-semi1.s3.amazonaws.com/elbicho-1677285813905-NodeJs.jpeg"
+                },
+                {
+                    "url": "https://cdn-icons-png.flaticon.com/512/9002/9002438.png"
+                }
+            ]
+        }
+    }
+}
+ERROR
+{
+    "status": false,
+    "message": "El usuario no tiene albumes creados"
+}
 ```

@@ -40,6 +40,14 @@ class P1Model extends Database{
         return this.queryMultiple({sql: "CALL delete_album(?,?)", params: [username,albumName]});
     }
 
+    getAlbum(username){
+        return this.queryView({sql: `SELECT album_id, name FROM album WHERE username = '${username}' AND deleted_at IS NULL`});
+    }
+
+    getPicture(album_id){
+        return this.queryView({sql: `SELECT url FROM picture WHERE album_id = ${album_id} AND deleted_at IS NULL`});
+    }
+
 }
 
 module.exports = {P1Model};

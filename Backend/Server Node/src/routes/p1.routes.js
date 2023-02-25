@@ -56,10 +56,10 @@ router.post("/user/login", (req, res) => {
 router.get("/user", (req, res) => {
     P1Model.create(req.app)
         .getUser(req.body.username).then(data => {
-            if(data.length > 0){
-                return res.status(httpCode.OK).json(data);
-            }
-            return res.status(httpCode.NOT_FOUND).json({"status": false, "message":"El usuario no existe"});
+        if (data.length > 0) {
+            return res.status(httpCode.OK).json(data);
+        }
+        return res.status(httpCode.NOT_FOUND).json({"status": false, "message": "El usuario no existe"});
     }).catch(err => {
         console.log(err);
         res.status(httpCode.INTERNAL_SERVER_ERROR).json({"error": err});
@@ -138,7 +138,22 @@ router.delete("/album", async (req, res) => {
     });
 });
 
+router.get("/album", async (req, res) => {
+    let albumList = await P1Model.create(req.app).getAlbum(req.body.username);
+    if( albumList.length > 0){
+        const albumResponse = {};
+        for (const album of albumList){
+            const pictureList = await  P1Model.create(req.app).getPicture(album.album_id);
+            albumResponse[album.name] = pictureList;
+        }
+        const result = {album: albumResponse};
+        console.log(result);
+        return res.status(httpCode.OK).json({"status":true,result});
+    }
+    return res.status(httpCode.NOT_FOUND).json({"status":false,"message": "El usuario no tiene albumes creados"});
 
+});
 
 
 module.exports = {router}
+
