@@ -37,7 +37,36 @@ PORT=<PUERTO>
 
 El puerto normalmente en MYSQL es el ***3306***
 
-## ENDPOINTS DISPONIBLES
+# ENDPOINTS DISPONIBLES
+## Resumen
+
+### /api/user
+```js
+[POST] -> Crea un nuevo usuario, le crea el album por default de las fotos de perfil y le almacena la foto en el album default.
+
+[GET] -> Obtiene informacion principal del usuario, esto incluyendo la foto de perfil (esta foto de identifica por ser la mas reciente o la ultima foto de perfil subida).
+
+[PUT] -> Actualiza un usuario, SIEMPRE HAY QUE MANDARLE DATOS, por ejemplo si solo se actualiza la foto de perfil, hay que mandar el nombre antiguo en la peticion.
+```
+### /api/login
+```js
+[GET] -> verifica el logueo del usuario
+
+### /api/picture
+[POST] -> Guarda una foto nueva, hay que indicarle a que usuario pertenece y a que album de este usuario
+```
+
+### /api/album
+```js
+[POST] -> Crea un nuevo album para un usuario, se indica nombre del album y username del usuario.
+
+[PUT] -> Actualiza el nombre de un album, se le debe indicar a que usuario pertenece, nombre antiguo y nombre nuevo.
+
+[DELETE] -> Elimina un album de la base de datos, si elimina el album tambien las imagenes dentro del mismo.
+
+[GET] -> Obtiene un objeto estructurado con los albumes y las urls de cada album.
+```
+
 
 ```bash
 [POST]
