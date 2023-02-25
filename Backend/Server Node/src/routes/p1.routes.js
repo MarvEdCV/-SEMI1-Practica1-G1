@@ -28,7 +28,7 @@ router.post("/user", async (req, res) => {
     });
 });
 
-router.post("/user/login", (req, res) => {
+router.get("/user/login", (req, res) => {
     P1Model.create(req.app)
         .findUser(req.body.username).then(data => {
         let passEncrypted = CryptoJS.MD5(req.body.password).toString();
@@ -147,7 +147,6 @@ router.get("/album", async (req, res) => {
             albumResponse[album.name] = pictureList;
         }
         const result = {album: albumResponse};
-        console.log(result);
         return res.status(httpCode.OK).json({"status":true,result});
     }
     return res.status(httpCode.NOT_FOUND).json({"status":false,"message": "El usuario no tiene albumes creados"});
