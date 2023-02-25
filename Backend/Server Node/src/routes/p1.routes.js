@@ -14,11 +14,10 @@ router.get("/", (req, res) => {
 })
 
 router.post("/user", async (req, res) => {
-    //Todo: Aca es donde tengo que pasar la imagen de base 64 a url ya que la picture en el body vendra en base 64.
     const url = await uploader.uploadImage(req.body.picture, req.body.filename);
     console.log(url);
     P1Model.create(req.app)
-        .saveNewUser(req.body.username, req.body.password, url).then(data => {
+        .saveNewUser(req.body.username, req.body.name, req.body.password, url).then(data => {
         res.status(httpCode.OK).json(data);
     }).catch(err => {
         console.log(err);
@@ -36,14 +35,35 @@ router.post("/user/login", (req, res) => {
         let passEncrypted = CryptoJS.MD5(req.body.password).toString();
         if (data.length > 0) {
             if (passEncrypted == data[0].password) {
-                return res.status(httpCode.OK).json({"successStatus": true, "existUser":true, "errorMessage": null});
+                return res.status(httpCode.OK).json({"successStatus": true, "existUser": true, "errorMessage": null});
             }
-            return res.status(httpCode.NOT_FOUND).json({"successStatus": false, "existUser": true ,"errorMessage": "contraseña incorrecta"});
+            return res.status(httpCode.NOT_FOUND).json({
+                "successStatus": false,
+                "existUser": true,
+                "errorMessage": "contraseña incorrecta"
+            });
         }
-        return res.status(httpCode.NOT_FOUND).json({"successStatus": false, "existUser": false , "errorMessage": "El usuario no existe"});
+        return res.status(httpCode.NOT_FOUND).json({
+            "successStatus": false,
+            "existUser": false,
+            "errorMessage": "El usuario no existe"
+        });
     }).catch(err => {
         console.log(err);
         res.sendStatus(httpCode.INTERNAL_SERVER_ERROR);
+    });
+});
+
+router.get("/user", (req, res) => {
+    P1Model.create(req.app)
+        .findUser(req.body.username).then(data => {
+            if(data.length > 0){
+                return res.status(httpCode.OK).json(data);
+            }
+            return res.status(httpCode.NOT_FOUND).json({"status": false, "message":"El usuario no existe"});
+    }).catch(err => {
+        console.log(err);
+        res.status(httpCode.INTERNAL_SERVER_ERROR).json({"error": err});
     });
 });
 

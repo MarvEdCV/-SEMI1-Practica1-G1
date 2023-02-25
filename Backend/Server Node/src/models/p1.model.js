@@ -8,8 +8,8 @@ class P1Model extends Database{
         return new P1Model(app.locals.mysqlConnectionPool);
     }
 
-    saveNewUser(userName,password,url){
-        return this.queryMultiple({sql: "CALL new_user(?,?,?)", params: [userName,password,url]});
+    saveNewUser(userName, name,password,url){
+        return this.queryMultiple({sql: "CALL new_user(?,?,?,?)", params: [userName,name,password,url]});
     }
 
     findUser(userName){
