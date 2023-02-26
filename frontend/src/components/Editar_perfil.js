@@ -1,12 +1,14 @@
 import React, { useRef, useState } from 'react'
 import { Button } from '@mui/material'
 import Webcam from "react-webcam";
+import FileBase64 from 'react-file-base64'
 
 import './Editar_perfil.css'
 
 
 const Editar_perfil = () => {
-    const [fotoCam, setFotoCam] = useState("")
+    const [foto64, setFoto64] = useState("")
+    const [filename, setFilename] = useState("")
     const webcamRef = useRef(null)
 
 
@@ -19,7 +21,7 @@ const Editar_perfil = () => {
         nombre = event.target[1].value
         password = event.target[2].value
         passwordver = event.target[3].value
-        foto = fotoCam
+        foto = foto64
 
         let usuario ={
             username,
@@ -35,7 +37,7 @@ const Editar_perfil = () => {
      //Almacena la foto tomada
      const tomarFoto = () =>{
         const imageSrc = webcamRef.current.getScreenshot();
-        setFotoCam(imageSrc);
+        setFoto64(imageSrc);
     }
 
   return (
@@ -43,12 +45,29 @@ const Editar_perfil = () => {
         <div className='contenedor'>
             <div className='contenedor-izq'>
                 <div className='contenedor-izq-items'>  
-                    {fotoCam === "" && <Webcam ref={webcamRef} className='register-cam'/>}
-                    {fotoCam === "" || <img src={fotoCam} className='register-cam'></img>}
-                    <Button onClick={tomarFoto}>Tomar foto</Button>
+                    {foto64 ? 
+                        <img src={foto64} className='register-cam'></img>
+                        :
+                        <Webcam ref={webcamRef} className='register-cam'/>
+                    }
+                    {foto64 ?
+                        <Button onClick={()=>setFoto64("")} color="error">Volver a tomar foto</Button>
+                        :
+                        <Button onClick={()=>{
+                            setFoto64(webcamRef.current.getScreenshot())
+                            setFilename("perfil.webp")
+                            console.log(foto64)
+                        }}>Tomar foto</Button>
+                    }
                     <Button variant="contained" component="label" style={{"marginTop":"30px"}}>
                         Subir
-                    <input hidden multiple type="file" />
+                    <FileBase64 hidden multiple={false} onDone={({name,base64})=>{
+                        setFoto64(base64)
+                        setFilename(name)
+                        console.log(base64)
+                        console.log(name)
+                    }
+                    } type="file" />
                     </Button>
                 </div>
             </div>

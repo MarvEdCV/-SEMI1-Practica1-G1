@@ -27,7 +27,7 @@ const SideMenu = ({username}) => {
                 <NavIcon>
                 </NavIcon>
                 <NavText className='nav-item' style={itemStyle}>
-                    <Link className='nav-item-link' to={`/home${username}`} style={itemStyle}>Home</Link>
+                    <Link className='nav-item-link' to={`/home/${username}`} style={itemStyle}>Home</Link>
                 </NavText>
             </NavItem>
             <NavItem eventKey="ver-fotos">
