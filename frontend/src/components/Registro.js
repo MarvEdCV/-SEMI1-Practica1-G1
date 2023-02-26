@@ -46,7 +46,7 @@ const Registro = () => {
             picture
         }
         console.log(usuario)
-        postFetch(URLS.regitro,usuario)
+        postFetch(URLS.user,usuario)
             .then((data)=> data.json())
             .then((data)=> {
                 console.log(data)

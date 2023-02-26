@@ -1,43 +1,73 @@
-import React, { useRef, useState } from 'react'
+import React, { useEffect, useRef, useState } from 'react'
 import { Button } from '@mui/material'
 import Webcam from "react-webcam";
 import FileBase64 from 'react-file-base64'
 
 import './Editar_perfil.css'
+import { postFetch, putFetch } from '../helpers/peticiones';
+import { URLS, url_servidor } from '../helpers/routes';
+import { useParams } from 'react-router-dom';
 
 
-const Editar_perfil = () => {
+const Editar_perfil = ({setUsername}) => {
     const [foto64, setFoto64] = useState("")
     const [filename, setFilename] = useState("")
     const webcamRef = useRef(null)
+    //Se obtiene el usuario de la url
+    const {username} = useParams()
+    const [dataUser, setDataUser] = useState({
+        picture_profile:"",
+        name:"",
+        username:""
+    })
+
+
+    useEffect(() => {
+        setUsername(username)
+        //Peticion get para la informacion del usuario
+        postFetch(URLS.perfil,{username:username})
+            .then((data)=>data.json())
+            .then((data)=>{
+                setDataUser({
+                    name:data[0].name||'',
+                    username:data[0].username||'',
+                    picture_profile:data[0].picture_profile||''
+                })
+            })
+    }, [username])
+    
 
 
     const handleSubmit = (event) =>{
         event.preventDefault();
 
         //Se obtienen todos los datos del usuario a modificar
-        let username,nombre,password,passwordver,foto
+        let username,name,password,passwordver,foto
         username = event.target[0].value
-        nombre = event.target[1].value
+        name = event.target[1].value
         password = event.target[2].value
         passwordver = event.target[3].value
-        foto = foto64
+        foto = foto64.split(",")[1]
 
+        setUsername(username) //Se vuelve a setear el username del usuario
+        
         let usuario ={
             username,
-            nombre,
-            password,
-            passwordver,
-            foto
+            name,
+            filename,
+            picture:foto
         }
         console.log(usuario)
-    }
-
-
-     //Almacena la foto tomada
-     const tomarFoto = () =>{
-        const imageSrc = webcamRef.current.getScreenshot();
-        setFoto64(imageSrc);
+        putFetch(URLS.user,usuario)
+            .then((data)=>data.json())
+            .then((data)=>{
+                console.log(data)
+                if(data[0].successStatus){
+                    alert("Se han realizado los cambios correctamente")
+                    return
+                }
+                alert(data.errorMessage)
+            })
     }
 
   return (
@@ -56,7 +86,7 @@ const Editar_perfil = () => {
                         <Button onClick={()=>{
                             setFoto64(webcamRef.current.getScreenshot())
                             setFilename("perfil.webp")
-                            console.log(foto64)
+                            //console.log(foto64)
                         }}>Tomar foto</Button>
                     }
                     <Button variant="contained" component="label" style={{"marginTop":"30px"}}>
@@ -64,8 +94,8 @@ const Editar_perfil = () => {
                     <FileBase64 hidden multiple={false} onDone={({name,base64})=>{
                         setFoto64(base64)
                         setFilename(name)
-                        console.log(base64)
-                        console.log(name)
+                        //console.log(base64)
+                        //console.log(name)
                     }
                     } type="file" />
                     </Button>
@@ -75,11 +105,11 @@ const Editar_perfil = () => {
                 <form className='info' onSubmit={handleSubmit}>
                     <div className='input-text'>
                         <label htmlFor='username'>Nombre de usuario</label>
-                        <input type={'text'} id='username'></input>
+                        <input type={'text'} id='username' defaultValue={username}></input>
                     </div>
                     <div className='input-text'>
                         <label htmlFor='nombre'>Nombre completo</label>
-                        <input type={'text'} id='nombre'></input>
+                        <input type={'text'} defaultValue={dataUser.name} id='nombre'></input>
                     </div>
                     <div className='password-text'>
                         <label htmlFor='password'>Confirmar contraseña</label>
