@@ -1,12 +1,13 @@
 import React from 'react'
+import 'axios'
 import { useNavigate } from 'react-router-dom'
 import { Button } from '@mui/material'
 
 import './Login.css'
-import { URLS } from '../helpers/routes'
+import { URLS, url_servidor } from '../helpers/routes'
 import { postFetch } from '../helpers/peticiones'
 
-const Login = () => {
+const Login = (props) => {
   //useNavigate para cambiar la url para cargar otros componentes
   const navigate = useNavigate()
   const navegar = (url) =>{
@@ -25,11 +26,14 @@ const Login = () => {
       username,
       password
     }
-    postFetch(URLS.login,datos)
+    console.log(datos)
+    postFetch(`${url_servidor}/api/user/login`,datos)
       .then((data) =>data.json())
       .then((data) =>{
-        if(data.succesStatus === true){
-          navegar('/home')
+        console.log(data)
+        if(data.successStatus === true){
+          props.setUsername(username)
+          navegar(`home/${username}`)
         }else{
           alert(data.errorMessage)
         }

@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useState } from 'react';
 import './App.css';
 import Home from './components/Home';
 import SideMenu from './components/SideMenu';
@@ -12,17 +12,17 @@ import Login from './components/Login';
 import Registro from './components/Registro';
 
 function App() {
-
+  const [username, setUsername] = useState("")
   return (
     <div className="App">
       <Routes>
-        <Route path='/' element={<Login />}/>
-        <Route path='/registro' element={<Registro />}/>
-        <Route path='/home' element={[<SideMenu/>,<Home />]}/>
-        <Route path='/editar-perfil' element={[<SideMenu/>,<EditarPerfil />]}/>
-        <Route path='/subir-foto' element={[<SideMenu/>,<SubirFoto />]}/>
-        <Route path='/ver-fotos' element={[<SideMenu/>,<VerFotos />]}/>
-        <Route path='/editar-albumes' element={[<SideMenu />,<EditarAlbumes/>]}/>
+        <Route path='/' element={<Login setUsername={setUsername}/>}/>
+        <Route path={`/registro/`} element={<Registro />}/>
+        <Route path={`/home/:username`} element={[<SideMenu/>,<Home />]}/>
+        <Route path={`/editar-perfil/:username`} element={[<SideMenu/>,<EditarPerfil />]}/>
+        <Route path={`/subir-foto/:username`} element={[<SideMenu/>,<SubirFoto />]}/>
+        <Route path={`/ver-fotos/:username`} element={[<SideMenu/>,<VerFotos />]}/>
+        <Route path={`/editar-albumes/:username`} element={[<SideMenu />,<EditarAlbumes/>]}/>
       </Routes>
     </div>
   );

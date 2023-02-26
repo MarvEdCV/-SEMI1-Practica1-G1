@@ -5,25 +5,30 @@ import "./Home.css"
 import Perfil from './Perfil'
 import Navegar from '../helpers/navegar'
 import { URLS } from '../helpers/routes'
+import { postFetch } from '../helpers/peticiones'
+import { useParams } from 'react-router-dom'
 
 
 
 const Home = () => {
+    const {username} = useParams()
     const [dataUser, setDataUser] = useState({
-        imagen:"",
+        picture_profile:"",
         name:"",
         username:""
     })
 
     useEffect(() => {
         //Peticion get para la informacion del usuario
-        fetch(URLS.perfil)
+        console.log(username)
+        postFetch(URLS.perfil,{username:username})
             .then((data)=>data.json())
             .then((data)=>{
+                console.log(data)
                 setDataUser({
-                    name:data.name,
-                    username:data.username,
-                    imagen:data.imagen
+                    name:data[0].name||'',
+                    username:data[0].username||'',
+                    picture_profile:data[0].picture_profile||''
                 })
             })
     }, [])
@@ -33,7 +38,7 @@ const Home = () => {
     <React.Fragment>
     <div className='contenedor'>
         <div className='contenedor-izq'>
-            <Perfil imagen={dataUser.imagen}/>
+            <Perfil imagen={dataUser.picture_profile }/>
         </div>
         <div className='contenedor-der'>
             <div className='info'>
