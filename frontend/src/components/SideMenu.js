@@ -4,7 +4,7 @@ import '@trendmicro/react-sidenav/dist/react-sidenav.css';
 import { Link } from 'react-router-dom';
 
 
-const SideMenu = () => {
+const SideMenu = ({username}) => {
     const [visible, setVisible] = useState(false)
 
     const itemStyle = {
@@ -27,7 +27,7 @@ const SideMenu = () => {
                 <NavIcon>
                 </NavIcon>
                 <NavText className='nav-item' style={itemStyle}>
-                    <Link className='nav-item-link' to={'/home'} style={itemStyle}>Home</Link>
+                    <Link className='nav-item-link' to={`/home${username}`} style={itemStyle}>Home</Link>
                 </NavText>
             </NavItem>
             <NavItem eventKey="ver-fotos">
@@ -35,7 +35,7 @@ const SideMenu = () => {
                 <i className="fa fa-fw fa-device" style={{ fontSize: '1.75em' }} />
                 </NavIcon>
                 <NavText  style={itemStyle}>
-                <Link to={'/ver-fotos'}  style={itemStyle}>Ver fotos</Link>
+                <Link to={`/ver-fotos/${username}`}  style={itemStyle}>Ver fotos</Link>
                 </NavText>
             </NavItem>
             <NavItem eventKey="subir-foto">
@@ -43,7 +43,7 @@ const SideMenu = () => {
                 <i className="fa fa-fw fa-home" style={{ fontSize: '1.75em' }} />
                 </NavIcon>
                 <NavText  style={itemStyle}>
-                    <Link to={'/subir-foto'}  style={itemStyle}>Subir foto</Link>
+                    <Link to={`/subir-foto/${username}`}  style={itemStyle}>Subir foto</Link>
                 </NavText>
             </NavItem>
             <NavItem eventKey="editar-perfil">
@@ -51,7 +51,7 @@ const SideMenu = () => {
                 <i className="fa fa-fw fa-home" style={{ fontSize: '1.75em' }} />
                 </NavIcon>
                 <NavText style={itemStyle}>
-                    <Link to={'/editar-perfil'} style={itemStyle}>Editar perfil</Link>
+                    <Link to={`/editar-perfil/${username}`} style={itemStyle}>Editar perfil</Link>
                 </NavText>
             </NavItem>
             <NavItem eventKey="editar-albumes">
@@ -59,7 +59,7 @@ const SideMenu = () => {
                 <i className="fa fa-fw fa-home" style={{ fontSize: '1.75em' }} />
                 </NavIcon>
                 <NavText style={itemStyle}>
-                    <Link to={'/editar-albumes'} style={itemStyle}>Editar albumes</Link>
+                    <Link to={`/editar-albumes/${username}`} style={itemStyle}>Editar albumes</Link>
                 </NavText>
             </NavItem>
             <NavItem eventKey="cerrar-sesion">

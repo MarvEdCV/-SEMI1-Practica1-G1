@@ -44,7 +44,7 @@ const Editar_perfil = () => {
             <div className='contenedor-izq'>
                 <div className='contenedor-izq-items'>  
                     {fotoCam === "" && <Webcam ref={webcamRef} className='register-cam'/>}
-                    {fotoCam === "" || <img src={fotoCam}></img>}
+                    {fotoCam === "" || <img src={fotoCam} className='register-cam'></img>}
                     <Button onClick={tomarFoto}>Tomar foto</Button>
                     <Button variant="contained" component="label" style={{"marginTop":"30px"}}>
                         Subir

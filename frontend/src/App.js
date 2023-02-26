@@ -18,11 +18,11 @@ function App() {
       <Routes>
         <Route path='/' element={<Login setUsername={setUsername}/>}/>
         <Route path={`/registro/`} element={<Registro />}/>
-        <Route path={`/home/:username`} element={[<SideMenu/>,<Home />]}/>
-        <Route path={`/editar-perfil/:username`} element={[<SideMenu/>,<EditarPerfil />]}/>
-        <Route path={`/subir-foto/:username`} element={[<SideMenu/>,<SubirFoto />]}/>
-        <Route path={`/ver-fotos/:username`} element={[<SideMenu/>,<VerFotos />]}/>
-        <Route path={`/editar-albumes/:username`} element={[<SideMenu />,<EditarAlbumes/>]}/>
+        <Route path={`/home/:username`} element={[<SideMenu username={username}/>,<Home />]}/>
+        <Route path={`/editar-perfil/:username`} element={[<SideMenu username={username}/>,<EditarPerfil />]}/>
+        <Route path={`/subir-foto/:username`} element={[<SideMenu username={username}/>,<SubirFoto />]}/>
+        <Route path={`/ver-fotos/:username`} element={[<SideMenu username={username}/>,<VerFotos />]}/>
+        <Route path={`/editar-albumes/:username`} element={[<SideMenu username={username}/>,<EditarAlbumes/>]}/>
       </Routes>
     </div>
   );
