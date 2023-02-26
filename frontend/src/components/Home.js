@@ -7,6 +7,7 @@ import Navegar from '../helpers/navegar'
 import { URLS } from '../helpers/routes'
 import { postFetch } from '../helpers/peticiones'
 import { useParams } from 'react-router-dom'
+import { getDataUser } from '../helpers/dataUserRequest'
 
 
 
@@ -21,16 +22,7 @@ const Home = () => {
     useEffect(() => {
         //Peticion get para la informacion del usuario
         console.log(username)
-        postFetch(URLS.perfil,{username:username})
-            .then((data)=>data.json())
-            .then((data)=>{
-                console.log(data)
-                setDataUser({
-                    name:data[0].name||'',
-                    username:data[0].username||'',
-                    picture_profile:data[0].picture_profile||''
-                })
-            })
+        getDataUser(username,setDataUser)
     }, [])
     
 
