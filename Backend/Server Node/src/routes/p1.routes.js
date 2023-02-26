@@ -28,7 +28,7 @@ router.post("/user", async (req, res) => {
     });
 });
 
-router.get("/user/login", (req, res) => {
+router.post("/user/login", (req, res) => {
     P1Model.create(req.app)
         .findUser(req.body.username).then(data => {
         let passEncrypted = CryptoJS.MD5(req.body.password).toString();
@@ -53,7 +53,7 @@ router.get("/user/login", (req, res) => {
     });
 });
 
-router.get("/user", (req, res) => {
+router.post("/user/get", (req, res) => {
     P1Model.create(req.app)
         .getUser(req.body.username).then(data => {
         if (data.length > 0) {
@@ -138,7 +138,7 @@ router.delete("/album", async (req, res) => {
     });
 });
 
-router.get("/album", async (req, res) => {
+router.post("/album/get", async (req, res) => {
     let albumList = await P1Model.create(req.app).getAlbum(req.body.username);
     if( albumList.length > 0){
         const albumResponse = {};
