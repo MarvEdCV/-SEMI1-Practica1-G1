@@ -7,7 +7,6 @@ export const getDataUser = (username,setDataUser) =>{
     postFetch(URLS.perfil,{username:username})
     .then((data)=>data.json())
     .then((data)=>{
-        console.log(data)
         setDataUser({
             name:data[0].name||'',
             username:data[0].username||'',

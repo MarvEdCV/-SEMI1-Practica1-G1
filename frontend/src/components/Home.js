@@ -1,17 +1,13 @@
 import React, { useEffect, useState } from 'react'
-import SideMenu from './SideMenu'
 
 import "./Home.css" 
 import Perfil from './Perfil'
-import Navegar from '../helpers/navegar'
-import { URLS } from '../helpers/routes'
-import { postFetch } from '../helpers/peticiones'
 import { useParams } from 'react-router-dom'
 import { getDataUser } from '../helpers/dataUserRequest'
 
 
 
-const Home = () => {
+const Home = (props) => {
     const {username} = useParams()
     const [dataUser, setDataUser] = useState({
         picture_profile:"",
@@ -23,6 +19,8 @@ const Home = () => {
         //Peticion get para la informacion del usuario
         console.log(username)
         getDataUser(username,setDataUser)
+
+        props.setUsername(username)
     }, [])
     
 

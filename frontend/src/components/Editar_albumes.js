@@ -7,17 +7,29 @@ import './Editar_album.css'
 import { deleteFetch, postFetch, putFetch } from '../helpers/peticiones'
 import { URLS } from '../helpers/routes'
 import { useParams } from 'react-router-dom'
+import { getDataUser } from '../helpers/dataUserRequest';
 
-const Editar_albumes = () => {
+const Editar_albumes = (props) => {
     const inputName = useRef()
     const [albumes, setAlbumes] = useState([])
     const [selectedItem, setSelectedItem] = useState("")
 
     //Se obtiene el usuario de la url
     const {username} = useParams()
+    const [dataUser, setDataUser] = useState({
+        picture_profile:"",
+        name:"",
+        username:""
+    })
 
-    //Se obtienen los nombre de los albumes para colocarlos en el select
+    
     useEffect(() => {
+        //Peticion get para la informacion del usuario
+        getDataUser(username,setDataUser)
+
+        props.setUsername(username)
+
+        //Se obtienen los nombre de los albumes para colocarlos en el select
         setAlbumes([])
         postFetch(URLS.album_get,{username:username}) 
         .then((data)=>data.json())
@@ -106,7 +118,7 @@ const Editar_albumes = () => {
     <div className='editor-perfil'>
         <div className='contenedor'>  
             <div className='contenedor-izq'>
-                <Perfil />
+                <Perfil imagen={dataUser.picture_profile}/>
             </div>
             <div className='contenedor-der'>
                 <div className='info'>

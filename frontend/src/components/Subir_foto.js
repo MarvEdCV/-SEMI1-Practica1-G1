@@ -1,13 +1,32 @@
-import React from 'react'
+import React, { useEffect, useState } from 'react'
 import { Button } from '@mui/material'
 import Perfil from './Perfil'
+import { useParams } from 'react-router-dom'
+import { getDataUser } from '../helpers/dataUserRequest'
 
-const Subir_foto = () => {
+const Subir_foto = (props) => {
+    const {username} = useParams()
+    const [dataUser, setDataUser] = useState({
+        picture_profile:"",
+        name:"",
+        username:""
+    })
+
+    useEffect(() => {
+      //Peticion get para la informacion del usuario
+      console.log(username)
+      getDataUser(username,setDataUser)
+
+      props.setUsername(username)
+  }, [])
+
+
+    
   return (
     <React.Fragment>
         <div className='contenedor'>
             <div className='contenedor-izq'>
-                <Perfil />
+                <Perfil imagen={dataUser.picture_profile}/>
             </div>
             <div className='contenedor-der'>
                 <div className='info'>

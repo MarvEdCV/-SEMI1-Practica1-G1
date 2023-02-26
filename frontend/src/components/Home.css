@@ -33,7 +33,7 @@
     align-items: center;
 }
 .contenedor-izq img{
-    height: 45vh;
+    max-height: 45vh;
     border-radius: 30%;
 }
 
