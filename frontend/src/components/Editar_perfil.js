@@ -21,6 +21,9 @@ const Editar_perfil = ({setUsername}) => {
         username:""
     })
 
+    const [passwordValidated, setPasswordValidated] = useState(false)
+    const inputPassword = useRef()
+
 
     useEffect(() => {
         setUsername(username)
@@ -35,12 +38,41 @@ const Editar_perfil = ({setUsername}) => {
                 })
             })
     }, [username])
+
+
+    const validatePassword = () =>{
+        const password = inputPassword.current.value
+        const datos ={
+            username,
+            password
+        }
+        postFetch(`${url_servidor}/api/user/login`,datos)
+            .then((data) =>data.json())
+            .then((data) =>{
+                console.log(data)
+                if(data.successStatus === true){
+                    setPasswordValidated(true)
+                    alert("Contraseña validada")
+                }else{
+                    alert("Contraseña incorrecta")
+                }
+            })
+    }
+    
     
 
 
     const handleSubmit = (event) =>{
         event.preventDefault();
-
+        //Se valida que la contraseña haya sido validada
+        if(!passwordValidated){
+            alert("Se debe validar contraseña primero")
+            return
+        }
+        if(foto64 === ""){
+            alert("Para editar perfil debes de pones una nueva foto")
+            return
+        }
         //Se obtienen todos los datos del usuario a modificar
         let username,name,password,passwordver,foto
         username = event.target[0].value
@@ -105,17 +137,17 @@ const Editar_perfil = ({setUsername}) => {
                 <form className='info' onSubmit={handleSubmit}>
                     <div className='input-text'>
                         <label htmlFor='username'>Nombre de usuario</label>
-                        <input type={'text'} id='username' defaultValue={username}></input>
+                        <input type={'text'} id='username' defaultValue={username} required></input>
                     </div>
                     <div className='input-text'>
                         <label htmlFor='nombre'>Nombre completo</label>
-                        <input type={'text'} defaultValue={dataUser.name} id='nombre'></input>
+                        <input type={'text'} defaultValue={dataUser.name} id='nombre' required></input>
                     </div>
                     <div className='password-text'>
                         <label htmlFor='password'>Confirmar contraseña</label>
                         <div className='pass-ver'>
-                            <input type={'password'} id='password'></input>
-                            <Button variant='contained'>Confirmar password</Button> 
+                            <input ref={inputPassword}  type={'password'} id='password'></input>
+                            <Button onClick={validatePassword} variant='contained'>Confirmar password</Button> 
                         </div>
                     </div>
                     <div className='input-text'>

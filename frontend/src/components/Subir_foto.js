@@ -51,6 +51,21 @@ const Subir_foto = (props) => {
         //Se quita el encabezado de la foto en base63 para solo dejar el contenido
         const picture = foto64.split(",")[1]
         const albumName = selectedItem
+
+        if(foto64 === ""){
+            alert("Debes de seleccionar la foto a subir")
+            return
+        }
+        if(inputName.current.value === ""){
+            alert("Debes de colocarle un nombre a la foto")
+            return
+        }
+        
+        if(albumName === ""){
+            alert("Debes de seleccionar un album")
+            return
+        }
+
         console.log(albumName)
         const request = {
             picture,
@@ -61,8 +76,8 @@ const Subir_foto = (props) => {
         postFetch(URLS.picture,request)
             .then((data)=>data.json())
             .then((data) =>{
-                console.log(data)
-            })
+                alert("Imagen subida correctamente")
+            }) 
     }
  
     

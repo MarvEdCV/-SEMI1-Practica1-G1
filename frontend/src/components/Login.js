@@ -4,7 +4,7 @@ import { useNavigate } from 'react-router-dom'
 import { Button } from '@mui/material'
 
 import './Login.css'
-import { URLS, url_servidor } from '../helpers/routes'
+import { url_servidor } from '../helpers/routes'
 import { postFetch } from '../helpers/peticiones'
 
 const Login = (props) => {
@@ -36,6 +36,9 @@ const Login = (props) => {
           navegar(`home/${username}`)
         }else{
           alert(data.errorMessage)
+          //Se vacian los input
+          event.target[0].value = ""
+          event.target[1].value = ""
         }
       })
   }
