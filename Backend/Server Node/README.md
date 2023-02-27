@@ -104,7 +104,7 @@ ERROR
     }
 }
 
-[GET]
+[POST]
 http://localhost:3010/api/user/login
 Ejemplo de body:
 {
@@ -132,8 +132,8 @@ ERROR
     "errorMessage": "contraseña incorrecta"
 }
 
-[GET]
-http://localhost:3010/api/user
+[POST]
+http://localhost:3010/api/user/get
 Ejemplo de body:
 {
     "username": "user-postmanf"
@@ -258,8 +258,8 @@ ERROR
     }
 ]
 
-[GET]
-http://localhost:3010/api/album
+[POST]
+http://localhost:3010/api/album/get
 Ejemplo de body:
 {
     "username": "marved"
