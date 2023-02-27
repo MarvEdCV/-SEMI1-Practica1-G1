@@ -18,11 +18,11 @@
 }
 .contenedor-der{
     display: flex;
-    overflow: hidden;
     height: 100%;
     align-items: center;
     justify-content: center;
     background-color: aqua;
+    overflow: auto;
 }
 
 .contenedor-izq-items{

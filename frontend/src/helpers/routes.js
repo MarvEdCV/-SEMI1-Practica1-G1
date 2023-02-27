@@ -6,5 +6,6 @@ export const URLS = {
     perfil:`${url_servidor}/api/user/get`,
     login: `${url_servidor}/api/user/login`,
     album: `${url_servidor}/api/album`,
-    album_get: `${url_servidor}/api/album/get`
+    album_get: `${url_servidor}/api/album/get`,
+    picture: `${url_servidor}/api/picture`
 }
