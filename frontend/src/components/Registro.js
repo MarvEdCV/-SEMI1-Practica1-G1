@@ -27,46 +27,57 @@ const Registro = () => {
         }
 
         //Se obtienen todos los datos del usuario a registrar
-        let username,nombre,password,passwordver,foto
+        let username,name,password,passwordver,picture
         username = event.target[0].value
-        nombre = event.target[1].value
+        name = event.target[1].value
         password = event.target[2].value
         passwordver = event.target[3].value
-        foto = fotoCam
+        picture = fotoCam.split(",")[1]
+        console.log(picture)
+        if(password !== passwordver){
+            alert("Las contraseñas no coinciden")
+        }
 
         let usuario ={
             username,
-            nombre,
+            name,
             password,
-            passwordver,
-            foto
+            filename:"perfil.webp",
+            picture
         }
-        postFetch(URLS.regitro,usuario)
+        console.log(usuario)
+        postFetch(URLS.user,usuario)
             .then((data)=> data.json())
             .then((data)=> {
                 console.log(data)
-                if(data.resultado === true){
-                    navigate("/home")
+                if(data[0].successStatus === 1){
+                    alert("Usuario registrado exitosamente")
                 }else{
-                    alert(data.error)
+                    alert(data.errorMessage)
                 }
-            })
+        }) 
     }
 
 
-    //Almacena la foto tomada
-    const tomarFoto = () =>{
-        const imageSrc = webcamRef.current.getScreenshot();
-        setFotoCam(imageSrc);
-    }
 
 
   return (
     <div className='login'>
         <div className='register'>
             <div className='register-image'>
-                <Webcam ref={webcamRef} className='register-cam'/>
-                <Button onClick={tomarFoto}>Tomar foto</Button>
+                    {fotoCam ? 
+                        <img src={fotoCam} className='register-cam'></img>
+                        :
+                        <Webcam ref={webcamRef} className='register-cam'/>
+                    }
+                    {fotoCam ?
+                        <Button onClick={()=>setFotoCam("")} color="error">Volver a tomar foto</Button>
+                        :
+                        <Button onClick={()=>{
+                            setFotoCam(webcamRef.current.getScreenshot())
+                            console.log(fotoCam)
+                        }}>Tomar foto</Button>
+                    }
             </div>
             <div className='login-form'>
                 <h1>Registrarse</h1>

@@ -24,3 +24,18 @@ export async function putFetch(url='',data={}){
     })
     return response
 }
+
+
+export async function deleteFetch(url='',data={}){
+    const response = await fetch(url,{
+        method:"DELETE",
+        mode:"cors",
+        crossorigin:true,
+        headers:{
+            'Content-Type':'application/json'
+        },
+        body:JSON.stringify(data)
+    })
+    return response
+}
+

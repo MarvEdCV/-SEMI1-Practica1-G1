@@ -1,41 +1,105 @@
-import React, { useRef, useState } from 'react'
+import React, { useEffect, useRef, useState } from 'react'
 import { Button } from '@mui/material'
 import Webcam from "react-webcam";
+import FileBase64 from 'react-file-base64'
 
 import './Editar_perfil.css'
+import { postFetch, putFetch } from '../helpers/peticiones';
+import { URLS, url_servidor } from '../helpers/routes';
+import { useParams } from 'react-router-dom';
 
 
-const Editar_perfil = () => {
-    const [fotoCam, setFotoCam] = useState("")
+const Editar_perfil = ({setUsername}) => {
+    const [foto64, setFoto64] = useState("")
+    const [filename, setFilename] = useState("")
     const webcamRef = useRef(null)
+    //Se obtiene el usuario de la url
+    const {username} = useParams()
+    const [dataUser, setDataUser] = useState({
+        picture_profile:"",
+        name:"",
+        username:""
+    })
+
+    const [passwordValidated, setPasswordValidated] = useState(false)
+    const inputPassword = useRef()
+
+
+    useEffect(() => {
+        setUsername(username)
+        //Peticion get para la informacion del usuario
+        postFetch(URLS.perfil,{username:username})
+            .then((data)=>data.json())
+            .then((data)=>{
+                setDataUser({
+                    name:data[0].name||'',
+                    username:data[0].username||'',
+                    picture_profile:data[0].picture_profile||''
+                })
+            })
+    }, [username])
+
+
+    const validatePassword = () =>{
+        const password = inputPassword.current.value
+        const datos ={
+            username,
+            password
+        }
+        postFetch(`${url_servidor}/api/user/login`,datos)
+            .then((data) =>data.json())
+            .then((data) =>{
+                console.log(data)
+                if(data.successStatus === true){
+                    setPasswordValidated(true)
+                    alert("Contraseña validada")
+                }else{
+                    alert("Contraseña incorrecta")
+                }
+            })
+    }
+    
+    
 
 
     const handleSubmit = (event) =>{
         event.preventDefault();
-
+        //Se valida que la contraseña haya sido validada
+        if(!passwordValidated){
+            alert("Se debe validar contraseña primero")
+            return
+        }
+        if(foto64 === ""){
+            alert("Para editar perfil debes de pones una nueva foto")
+            return
+        }
         //Se obtienen todos los datos del usuario a modificar
-        let username,nombre,password,passwordver,foto
+        let username,name,password,passwordver,foto
         username = event.target[0].value
-        nombre = event.target[1].value
+        name = event.target[1].value
         password = event.target[2].value
         passwordver = event.target[3].value
-        foto = fotoCam
+        foto = foto64.split(",")[1]
 
+        setUsername(username) //Se vuelve a setear el username del usuario
+        
         let usuario ={
             username,
-            nombre,
-            password,
-            passwordver,
-            foto
+            name,
+            filename,
+            picture:foto
         }
         console.log(usuario)
-    }
-
-
-     //Almacena la foto tomada
-     const tomarFoto = () =>{
-        const imageSrc = webcamRef.current.getScreenshot();
-        setFotoCam(imageSrc);
+        putFetch(URLS.user,usuario)
+            .then((data)=>data.json())
+            .then((data)=>{
+                console.log(data)
+                if(data[0].successStatus){
+                    alert("Se han realizado los cambios correctamente")
+                    return
+                }
+                alert(data.errorMessage)
+            })
     }
 
   return (
@@ -43,12 +107,29 @@ const Editar_perfil = () => {
         <div className='contenedor'>
             <div className='contenedor-izq'>
                 <div className='contenedor-izq-items'>  
-                    {fotoCam === "" && <Webcam ref={webcamRef} className='register-cam'/>}
-                    {fotoCam === "" || <img src={fotoCam}></img>}
-                    <Button onClick={tomarFoto}>Tomar foto</Button>
+                    {foto64 ? 
+                        <img src={foto64} className='register-cam'></img>
+                        :
+                        <Webcam ref={webcamRef} className='register-cam'/>
+                    }
+                    {foto64 ?
+                        <Button onClick={()=>setFoto64("")} color="error">Volver a tomar foto</Button>
+                        :
+                        <Button onClick={()=>{
+                            setFoto64(webcamRef.current.getScreenshot())
+                            setFilename("perfil.webp")
+                            //console.log(foto64)
+                        }}>Tomar foto</Button>
+                    }
                     <Button variant="contained" component="label" style={{"marginTop":"30px"}}>
                         Subir
-                    <input hidden multiple type="file" />
+                    <FileBase64 hidden multiple={false} onDone={({name,base64})=>{
+                        setFoto64(base64)
+                        setFilename(name)
+                        //console.log(base64)
+                        //console.log(name)
+                    }
+                    } type="file" />
                     </Button>
                 </div>
             </div>
@@ -56,17 +137,17 @@ const Editar_perfil = () => {
                 <form className='info' onSubmit={handleSubmit}>
                     <div className='input-text'>
                         <label htmlFor='username'>Nombre de usuario</label>
-                        <input type={'text'} id='username'></input>
+                        <input type={'text'} id='username' defaultValue={username} required></input>
                     </div>
                     <div className='input-text'>
                         <label htmlFor='nombre'>Nombre completo</label>
-                        <input type={'text'} id='nombre'></input>
+                        <input type={'text'} defaultValue={dataUser.name} id='nombre' required></input>
                     </div>
                     <div className='password-text'>
                         <label htmlFor='password'>Confirmar contraseña</label>
                         <div className='pass-ver'>
-                            <input type={'password'} id='password'></input>
-                            <Button variant='contained'>Confirmar password</Button> 
+                            <input ref={inputPassword}  type={'password'} id='password'></input>
+                            <Button onClick={validatePassword} variant='contained'>Confirmar password</Button> 
                         </div>
                     </div>
                     <div className='input-text'>

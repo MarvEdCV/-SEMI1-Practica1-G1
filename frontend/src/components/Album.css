@@ -1,0 +1,39 @@
+.contenedor-albumes{
+    display: block;
+    max-height: 100%;
+    background-color: aqua;
+    overflow: scroll;
+}
+
+.contenedor-fotos{
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    background-color: aqua;
+    overflow: hidden;
+    min-height: 100%;
+}
+
+
+.album{
+    display: flex;
+    flex-direction: column;
+    background-color: #f2f2f2;
+    width: 80%;
+    height: 45vh;
+    margin-bottom: 2rem;
+    margin-top: 1rem;
+    overflow: scroll;
+}
+
+.album .fotos{
+    display: flex;
+    flex-direction: row;
+    margin-bottom: 25px;
+}
+
+.album img{
+    max-width: 9vw;
+    margin: 15px 10px 10px 10px;
+}
+
