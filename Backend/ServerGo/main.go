@@ -137,7 +137,7 @@ func setRoutes(router *mux.Router) {
 	}).Methods(http.MethodPost)
 
 	//tercer endpoint
-	router.HandleFunc("/user/get", func(w http.ResponseWriter, r *http.Request) {
+	router.HandleFunc("/user", func(w http.ResponseWriter, r *http.Request) {
 		body, _ := ioutil.ReadAll(r.Body)
 		var usuario user
 		json.Unmarshal(body, &usuario)
@@ -184,6 +184,23 @@ func setRoutes(router *mux.Router) {
 		}
 
 	}).Methods(http.MethodPost)
+
+	//cuarto endpoint
+	router.HandleFunc("/user", func(w http.ResponseWriter, r *http.Request) {
+		body, _ := ioutil.ReadAll(r.Body)
+		var usuario user
+		json.Unmarshal(body, &usuario)
+		w.Header().Set("Content-Type", "application/json")
+
+		var response response1
+		response = Updateuser(usuario)
+		if response.Error != nil {
+			w.WriteHeader(http.StatusInternalServerError)
+		} else {
+			w.WriteHeader(http.StatusOK)
+		}
+		json.NewEncoder(w).Encode(response)
+	}).Methods(http.MethodPut)
 }
 
 func createuser(usuario user) response1 {
@@ -201,6 +218,32 @@ func createuser(usuario user) response1 {
 	if err != nil {
 		res.SucessStatus = false
 		res.ErrorMessage = "Hubo un error en la creación de usuario revise el servidor de go"
+		res.Error = err
+
+		return res
+	} else {
+		res.SucessStatus = 1
+		res.ErrorMessage = nil
+
+	}
+	return res
+}
+
+func Updateuser(usuario user) response1 {
+	//fmt.Println(usuario)
+	var res response1
+	bd, err := getDBq()
+	if err != nil {
+		res.SucessStatus = false
+		res.ErrorMessage = "Hubo un error con la conexion de la base de datos"
+		res.Error = err
+		return res
+	}
+	query, err := bd.Query("call update_user('" + usuario.Username + "'," + "'" + usuario.Name + "', '" + usuario.Picture + "')")
+	fmt.Println(query)
+	if err != nil {
+		res.SucessStatus = false
+		res.ErrorMessage = "Hubo un error en la actualización de usuario revise el servidor de go"
 		res.Error = err
 
 		return res
