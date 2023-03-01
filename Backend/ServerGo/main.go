@@ -10,6 +10,8 @@ import (
 	"encoding/json"
 	"net/http"
 
+	"io/ioutil"
+
 	_ "github.com/go-sql-driver/mysql"
 	"github.com/gorilla/mux"
 )
@@ -17,6 +19,20 @@ import (
 type Datos struct {
 	Username string `json:"username"`
 	Name     string `json:"name"`
+}
+
+type user struct {
+	Username string
+	Name     string
+	Password string
+	Filename string
+	Picture  string
+}
+
+type response1 struct {
+	SucessStatus interface{} `json:"successStatus"`
+	ErrorMessage interface{} `json:"errorMessage"`
+	Error        interface{} `json:"error"`
 }
 
 const AllowedCORSDomain = "http://localhost"
@@ -52,13 +68,13 @@ func main() {
 		WriteTimeout: 15 * time.Second,
 		ReadTimeout:  15 * time.Second,
 	}
-	log.Printf("Server Iniciado %s", port)
+	log.Printf("Server Iniciado Seminario 1 %s", port)
 	log.Fatal(server.ListenAndServe())
 }
 
 //funcion para la conexion de la base de datos
 func getDBq() (*sql.DB, error) {
-	return sql.Open("mysql", "admin:seminario1-grupo1@tcp(db-photobucket.c5urnai0eipr.us-east-1.rds.amazonaws.com:3306)/db-photobucket")
+	return sql.Open("mysql", "admin:seminario1-grupo1@tcp(database-photobucket.cr1hjnbhot0g.us-east-1.rds.amazonaws.com:3306)/db-photobucket")
 }
 
 func getDatos() ([]Datos, error) {
@@ -93,14 +109,45 @@ func getDatos() ([]Datos, error) {
 func setRoutes(router *mux.Router) {
 	// First enable CORS. If you don't need cors, comment the next line
 	enableCORS(router)
-	router.HandleFunc("/usuarios", func(w http.ResponseWriter, r *http.Request) {
-		userDatos, err := getDatos()
-		if err == nil {
+	router.HandleFunc("/user", func(w http.ResponseWriter, r *http.Request) {
+		body, _ := ioutil.ReadAll(r.Body)
+		var usuario user
+		json.Unmarshal(body, &usuario)
+		w.Header().Set("Content-Type", "application/json")
+
+		var response response1
+		response = createuser(usuario)
+		json.NewEncoder(w).Encode(response)
+		//userDatos, err := getDatos()
+		/*if err == nil {
 			respondWithSuccess(userDatos, w)
 		} else {
 			respondWithError(err, w)
-		}
-	}).Methods(http.MethodGet)
+		}*/
+	}).Methods(http.MethodPost)
+}
+
+func createuser(usuario user) response1 {
+	//fmt.Println(usuario)
+	var res response1
+	bd, err := getDBq()
+	if err != nil {
+		return res
+	}
+	query, err := bd.Query("call new_user('" + usuario.Username + "'," + "'" + usuario.Name + "','" + usuario.Password + "', '" + usuario.Picture + "')")
+	fmt.Println(query)
+	if err != nil {
+
+		res.SucessStatus = false
+		res.ErrorMessage = "Hubo un error en la creación de usuario revise el servidor de go"
+
+		return res
+	} else {
+		res.SucessStatus = 1
+		res.ErrorMessage = nil
+		res.Error = err
+	}
+	return res
 }
 
 func enableCORS(router *mux.Router) {
