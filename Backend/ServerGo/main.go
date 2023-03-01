@@ -29,6 +29,17 @@ type user struct {
 	Picture  string
 }
 
+type album struct {
+	Username  string
+	AlbumName string
+}
+
+type albumUpdate struct {
+	Username     string
+	AlbumName    string
+	NewAlbumName string
+}
+
 type response1 struct {
 	SucessStatus interface{} `json:"successStatus"`
 	ErrorMessage interface{} `json:"errorMessage"`
@@ -137,7 +148,7 @@ func setRoutes(router *mux.Router) {
 	}).Methods(http.MethodPost)
 
 	//tercer endpoint
-	router.HandleFunc("/user", func(w http.ResponseWriter, r *http.Request) {
+	router.HandleFunc("/api/user/get", func(w http.ResponseWriter, r *http.Request) {
 		body, _ := ioutil.ReadAll(r.Body)
 		var usuario user
 		json.Unmarshal(body, &usuario)
@@ -201,6 +212,57 @@ func setRoutes(router *mux.Router) {
 		}
 		json.NewEncoder(w).Encode(response)
 	}).Methods(http.MethodPut)
+
+	//quinto endpoint
+	router.HandleFunc("/api/album", func(w http.ResponseWriter, r *http.Request) {
+		body, _ := ioutil.ReadAll(r.Body)
+		var albumb album
+		json.Unmarshal(body, &albumb)
+		w.Header().Set("Content-Type", "application/json")
+
+		var response response1
+		response = createAlbum(albumb)
+		if response.Error != nil {
+			w.WriteHeader(http.StatusInternalServerError)
+		} else {
+			w.WriteHeader(http.StatusOK)
+		}
+		json.NewEncoder(w).Encode(response)
+	}).Methods(http.MethodPost)
+
+	//sexto endpoint
+	router.HandleFunc("/api/album", func(w http.ResponseWriter, r *http.Request) {
+		body, _ := ioutil.ReadAll(r.Body)
+		var albumb albumUpdate
+		json.Unmarshal(body, &albumb)
+		w.Header().Set("Content-Type", "application/json")
+
+		var response response1
+		response = updateAlbum(albumb)
+		if response.Error != nil {
+			w.WriteHeader(http.StatusInternalServerError)
+		} else {
+			w.WriteHeader(http.StatusOK)
+		}
+		json.NewEncoder(w).Encode(response)
+	}).Methods(http.MethodPut)
+
+	//septimo endpoint
+	router.HandleFunc("/api/album", func(w http.ResponseWriter, r *http.Request) {
+		body, _ := ioutil.ReadAll(r.Body)
+		var albumb album
+		json.Unmarshal(body, &albumb)
+		w.Header().Set("Content-Type", "application/json")
+
+		var response response1
+		response = DeleteAlbum(albumb)
+		if response.Error != nil {
+			w.WriteHeader(http.StatusInternalServerError)
+		} else {
+			w.WriteHeader(http.StatusOK)
+		}
+		json.NewEncoder(w).Encode(response)
+	}).Methods(http.MethodDelete)
 }
 
 func createuser(usuario user) response1 {
@@ -229,6 +291,72 @@ func createuser(usuario user) response1 {
 	return res
 }
 
+func createAlbum(albuum1 album) response1 {
+	//fmt.Println(usuario)
+	var res response1
+	bd, err := getDBq()
+	if err != nil {
+		res.SucessStatus = false
+		res.ErrorMessage = "Hubo un error con la conexion de la base de datos"
+		res.Error = err
+		return res
+	}
+	query, err := bd.Query("call new_album('" + albuum1.Username + "'," + " '" + albuum1.AlbumName + "')")
+	fmt.Println(query)
+	if err != nil {
+		res.SucessStatus = false
+		res.ErrorMessage = "Hubo un error en la creación del album revise el servidor de go"
+		res.Error = err
+
+		return res
+	} else {
+		res.SucessStatus = 1
+		res.ErrorMessage = nil
+
+	}
+	return res
+}
+func updateAlbum(albuum1 albumUpdate) response1 {
+	//fmt.Println(usuario)
+	var res response1
+	bd, err := getDBq()
+	if err != nil {
+		res.SucessStatus = false
+		res.ErrorMessage = "Hubo un error con la conexion de la base de datos"
+		res.Error = err
+		return res
+	}
+	query, err := bd.Query("call update_album('" + albuum1.Username + "'," + " '" + albuum1.AlbumName + "'," + " '" + albuum1.NewAlbumName + "')")
+	fmt.Println(query)
+	if err != nil {
+		res.SucessStatus = false
+		res.ErrorMessage = "Hubo un error en la actualización del album revise el servidor de go"
+		res.Error = err
+
+		return res
+	} else {
+		res.SucessStatus = 1
+		res.ErrorMessage = nil
+		/*for query.Next() {
+		// In each step, scan one row
+		var datos2 response1
+
+		//json.Unmarshal(datos2, &datos3)
+		err = query.Scan(&datos2.SucessStatus, &datos2.ErrorMessage)
+
+		fmt.Println(int(big.NewInt(0).SetBytes(datos2.SucessStatus).Uint64()))
+		if err != nil {
+			fmt.Println("entre al error")
+		} else {
+			fmt.Println("ENTRE AL BUENO")
+			res.SucessStatus = 1
+			res.ErrorMessage = nil
+		*/
+
+	}
+	return res
+}
+
 func Updateuser(usuario user) response1 {
 	//fmt.Println(usuario)
 	var res response1
@@ -244,6 +372,32 @@ func Updateuser(usuario user) response1 {
 	if err != nil {
 		res.SucessStatus = false
 		res.ErrorMessage = "Hubo un error en la actualización de usuario revise el servidor de go"
+		res.Error = err
+
+		return res
+	} else {
+		res.SucessStatus = 1
+		res.ErrorMessage = nil
+
+	}
+	return res
+}
+
+func DeleteAlbum(albuum1 album) response1 {
+	//fmt.Println(usuario)
+	var res response1
+	bd, err := getDBq()
+	if err != nil {
+		res.SucessStatus = false
+		res.ErrorMessage = "Hubo un error con la conexion de la base de datos"
+		res.Error = err
+		return res
+	}
+	query, err := bd.Query("call delete_album('" + albuum1.Username + "'," + " '" + albuum1.AlbumName + "')")
+	fmt.Println(query)
+	if err != nil {
+		res.SucessStatus = false
+		res.ErrorMessage = "Hubo un error en la eliminación del album revise el servidor de go"
 		res.Error = err
 
 		return res
