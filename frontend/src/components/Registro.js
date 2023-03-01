@@ -36,6 +36,7 @@ const Registro = () => {
         console.log(picture)
         if(password !== passwordver){
             alert("Las contraseñas no coinciden")
+            return
         }
 
         let usuario ={
@@ -50,11 +51,22 @@ const Registro = () => {
             .then((data)=> data.json())
             .then((data)=> {
                 console.log(data)
-                if(data[0].successStatus === 1){
-                    alert("Usuario registrado exitosamente")
+                if(Array.isArray(data)){
+                    if(data[0].successStatus === 1){
+                        alert("Usuario registrado exitosamente")
+                        navegar("/")
+                        return
+                    }
+                    alert("Error al crear el usuario. Ya existe un usuario con ese username.")
                 }else{
-                    alert(data.errorMessage)
+                    if(data.successStatus === 1){
+                        alert("Usuario registrado exitosamente")
+                        navegar("/")
+                        return
+                    }
+                    alert("Error al crear el usuario. Ya existe un usuario con ese username.")
                 }
+               
         }) 
     }
 

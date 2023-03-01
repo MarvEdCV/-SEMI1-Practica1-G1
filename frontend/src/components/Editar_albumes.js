@@ -35,6 +35,9 @@ const Editar_albumes = (props) => {
         .then((data)=>data.json())
         .then((data)=>{
             Object.keys(data.result.album).forEach(element =>{
+                //Si el album es el de las fotos de perfil no se almacena
+                if(element === `default-${username}`) return
+                
                 let album ={
                     value:element,
                     label:element
@@ -51,7 +54,18 @@ const Editar_albumes = (props) => {
         if(albumName === ""){
             alert("El nombre del album no puede estar vacio")
             return
-        } 
+        }else if(albumName === `default-${username}`){
+            alert("No se posible crear un album con ese nombre")
+            return    
+        }
+
+        //Se valida si exite un album con el mismo nombre
+        const found = albumes.some(el => el.value === albumName)
+        if(found){
+            alert("Error al crear el album. Ya existe un album con ese nombre")
+            return
+        }
+
         const request = {
             username,
             albumName
@@ -62,6 +76,7 @@ const Editar_albumes = (props) => {
             .then((data)=>{
                 if(Array.isArray(data)){
                     alert("Album creado exitosamente")
+                    window.location.reload(false);
                 }else{
                     alert(data.errorMessage)
                     console.log(data.error)
@@ -70,11 +85,25 @@ const Editar_albumes = (props) => {
         inputName.current.value = ""
     }
 
+
     //Funcion para modificar un album existente
     const modificarAlbum = () =>{
         const albumName = inputName.current.value
         const newAlbumName = prompt("Ingrese el nuevo nombre del album")
-        
+
+        //Validaciones con respecto al nombre del album
+        if(albumName === ""){
+            alert("El nombre del album no puede estar vacio")
+            return
+        }else if(albumName === `default-${username}`){
+            alert("No se posible modificar ese album")    
+            return
+        }
+        if(newAlbumName === `default-${username}`){
+            alert("No se asignar ese nombre a un album")    
+            return
+        }
+
         const request = {
             username,
             albumName,
@@ -85,10 +114,12 @@ const Editar_albumes = (props) => {
             .then((data)=>{
                 if(data[0].successStatus === 1){
                     alert("Album modificado correactemente")
+                    window.location.reload(false);
                 }else{
                     alert(data[0].errorMessage)
                 }
             })
+        inputName.current.value = ""
     }
 
 
@@ -106,6 +137,7 @@ const Editar_albumes = (props) => {
             .then((data)=>{
                 if(data[0].successStatus === 1){
                     alert("Album eliminado correactemente")
+                    window.location.reload(false);
                 }else{
                     alert(data[0].errorMessage)
                 }
