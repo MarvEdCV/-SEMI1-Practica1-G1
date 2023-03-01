@@ -35,6 +35,16 @@ type response1 struct {
 	Error        interface{} `json:"error"`
 }
 
+type response2 struct {
+	Username        string `json:"username"`
+	Name            string `json:"name"`
+	Picture_profile string `json:"picture_profile"`
+}
+type responseError2 struct {
+	Status  interface{} `json:"status"`
+	Message string      `json:"message"`
+}
+
 const AllowedCORSDomain = "http://localhost"
 
 func main() {
@@ -109,6 +119,7 @@ func getDatos() ([]Datos, error) {
 func setRoutes(router *mux.Router) {
 	// First enable CORS. If you don't need cors, comment the next line
 	enableCORS(router)
+	//primer endpoint
 	router.HandleFunc("/user", func(w http.ResponseWriter, r *http.Request) {
 		body, _ := ioutil.ReadAll(r.Body)
 		var usuario user
@@ -117,13 +128,61 @@ func setRoutes(router *mux.Router) {
 
 		var response response1
 		response = createuser(usuario)
-		json.NewEncoder(w).Encode(response)
-		//userDatos, err := getDatos()
-		/*if err == nil {
-			respondWithSuccess(userDatos, w)
+		if response.Error != nil {
+			w.WriteHeader(http.StatusInternalServerError)
 		} else {
-			respondWithError(err, w)
-		}*/
+			w.WriteHeader(http.StatusOK)
+		}
+		json.NewEncoder(w).Encode(response)
+	}).Methods(http.MethodPost)
+
+	//tercer endpoint
+	router.HandleFunc("/user/get", func(w http.ResponseWriter, r *http.Request) {
+		body, _ := ioutil.ReadAll(r.Body)
+		var usuario user
+		json.Unmarshal(body, &usuario)
+		w.Header().Set("Content-Type", "application/json")
+
+		var response response2
+		var responseError responseError2
+		bd, err1 := getDBq()
+		if err1 != nil {
+			fmt.Println(err1)
+		}
+		query, err2 := bd.Query("call get_user('" + usuario.Username + "')")
+		fmt.Println(query)
+
+		if err2 != nil {
+			fmt.Println("ERROR")
+		}
+		for query.Next() {
+			// In each step, scan one row
+			var datos2 response2
+			err2 = query.Scan(&datos2.Username, &datos2.Name, &datos2.Picture_profile)
+			response = datos2
+			fmt.Println(datos2)
+			if err2 != nil {
+				w.WriteHeader(http.StatusNotFound)
+				responseError.Status = false
+				responseError.Message = "El usuario no existe"
+				json.NewEncoder(w).Encode(responseError)
+			} else {
+				if datos2.Username != "" {
+					fmt.Println("entre")
+					w.WriteHeader(http.StatusOK)
+					response = datos2
+					json.NewEncoder(w).Encode(response)
+				} else {
+					fmt.Println("entre2")
+					w.WriteHeader(http.StatusNotFound)
+					responseError.Status = false
+					responseError.Message = "El usuario no existe"
+					json.NewEncoder(w).Encode(responseError)
+				}
+
+			}
+		}
+
 	}).Methods(http.MethodPost)
 }
 
@@ -132,20 +191,23 @@ func createuser(usuario user) response1 {
 	var res response1
 	bd, err := getDBq()
 	if err != nil {
+		res.SucessStatus = false
+		res.ErrorMessage = "Hubo un error con la conexion de la base de datos"
+		res.Error = err
 		return res
 	}
 	query, err := bd.Query("call new_user('" + usuario.Username + "'," + "'" + usuario.Name + "','" + usuario.Password + "', '" + usuario.Picture + "')")
-	fmt.Println(query)
+	fmt.Println(query.Next())
 	if err != nil {
-
 		res.SucessStatus = false
 		res.ErrorMessage = "Hubo un error en la creación de usuario revise el servidor de go"
+		res.Error = err
 
 		return res
 	} else {
 		res.SucessStatus = 1
 		res.ErrorMessage = nil
-		res.Error = err
+
 	}
 	return res
 }
@@ -167,16 +229,4 @@ func middlewareCors(next http.Handler) http.Handler {
 			// and call next handler!
 			next.ServeHTTP(w, req)
 		})
-}
-
-// Helper functions for respond with 200 or 500 code
-func respondWithError(err error, w http.ResponseWriter) {
-	w.WriteHeader(http.StatusInternalServerError)
-	json.NewEncoder(w).Encode(err.Error())
-}
-
-func respondWithSuccess(data interface{}, w http.ResponseWriter) {
-
-	w.WriteHeader(http.StatusOK)
-	json.NewEncoder(w).Encode(data)
 }
