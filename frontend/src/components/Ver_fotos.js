@@ -37,7 +37,7 @@ const Ver_fotos = (props) => {
                 nombre:nombre,
                 fotos:data.result.album[nombre]
             }
-            console.log(album.fotos)
+            //console.log(album.fotos)
             setAlbumes(albumes=>[...albumes,album])
         })
     }) 

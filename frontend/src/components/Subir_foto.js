@@ -37,6 +37,9 @@ const Subir_foto = (props) => {
         .then((data)=>data.json())
         .then((data)=>{
             Object.keys(data.result.album).forEach(element =>{
+                //Si el album es el de las fotos de perfil no se almacena
+                if(element === `default-${username}`) return
+
                 let album ={
                     value:element,
                     label:element
