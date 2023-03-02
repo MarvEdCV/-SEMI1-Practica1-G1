@@ -40,6 +40,13 @@ type albumUpdate struct {
 	NewAlbumName string
 }
 
+type picture struct {
+	Username  string
+	AlbumName string
+	Filname   string
+	Picture   string
+}
+
 type response1 struct {
 	SucessStatus interface{} `json:"successStatus"`
 	ErrorMessage interface{} `json:"errorMessage"`
@@ -263,6 +270,24 @@ func setRoutes(router *mux.Router) {
 		}
 		json.NewEncoder(w).Encode(response)
 	}).Methods(http.MethodDelete)
+
+	//octavo endpoint
+	router.HandleFunc("/api/picture", func(w http.ResponseWriter, r *http.Request) {
+		body, _ := ioutil.ReadAll(r.Body)
+		var picture picture
+		json.Unmarshal(body, &picture)
+		w.Header().Set("Content-Type", "application/json")
+
+		var response response1
+		response = createPicture(picture)
+		if response.Error != nil {
+			w.WriteHeader(http.StatusInternalServerError)
+		} else {
+			w.WriteHeader(http.StatusOK)
+		}
+		json.NewEncoder(w).Encode(response)
+	}).Methods(http.MethodPost)
+
 }
 
 func createuser(usuario user) response1 {
@@ -352,6 +377,32 @@ func updateAlbum(albuum1 albumUpdate) response1 {
 			res.SucessStatus = 1
 			res.ErrorMessage = nil
 		*/
+
+	}
+	return res
+}
+
+func createPicture(picture1 picture) response1 {
+	fmt.Println(picture1)
+	var res response1
+	bd, err := getDBq()
+	if err != nil {
+		res.SucessStatus = false
+		res.ErrorMessage = "Hubo un error con la conexion de la base de datos"
+		res.Error = err
+		return res
+	}
+	query, err := bd.Query("call new_picture('" + picture1.Username + "'," + " '" + picture1.AlbumName + "'," + " '" + picture1.Picture + "')")
+	fmt.Println(query)
+	if err != nil {
+		res.SucessStatus = false
+		res.ErrorMessage = "Hubo un error en la creación de la foto revise el servidor de go"
+		res.Error = err
+
+		return res
+	} else {
+		res.SucessStatus = 1
+		res.ErrorMessage = nil
 
 	}
 	return res
