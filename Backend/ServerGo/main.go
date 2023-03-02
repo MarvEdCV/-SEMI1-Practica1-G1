@@ -1,7 +1,9 @@
 package main
 
 import (
+	"bytes"
 	"crypto/md5"
+	"encoding/base64"
 
 	"fmt"
 	"log"
@@ -14,6 +16,10 @@ import (
 	"net/http"
 
 	"io/ioutil"
+
+	"github.com/aws/aws-sdk-go/aws"
+	"github.com/aws/aws-sdk-go/aws/session"
+	"github.com/aws/aws-sdk-go/service/s3"
 
 	_ "github.com/go-sql-driver/mysql"
 	"github.com/gorilla/mux"
@@ -189,7 +195,10 @@ func setRoutes(router *mux.Router) {
 		w.Header().Set("Content-Type", "application/json")
 
 		var response response1
-		response = createuser(usuario)
+		var url string
+		url = s3method(usuario.Picture, usuario.Filename)
+		fmt.Println(url)
+		response = createuser(usuario, url)
 		if response.Error != nil {
 			w.WriteHeader(http.StatusInternalServerError)
 		} else {
@@ -285,14 +294,16 @@ func setRoutes(router *mux.Router) {
 	}).Methods(http.MethodPost)
 
 	//cuarto endpoint
-	router.HandleFunc("/user", func(w http.ResponseWriter, r *http.Request) {
+	router.HandleFunc("/api/user", func(w http.ResponseWriter, r *http.Request) {
 		body, _ := ioutil.ReadAll(r.Body)
 		var usuario user
 		json.Unmarshal(body, &usuario)
 		w.Header().Set("Content-Type", "application/json")
 
 		var response response1
-		response = Updateuser(usuario)
+		var url string
+		url = s3method(usuario.Picture, usuario.Filename)
+		response = Updateuser(usuario, url)
 		if response.Error != nil {
 			w.WriteHeader(http.StatusInternalServerError)
 		} else {
@@ -360,7 +371,9 @@ func setRoutes(router *mux.Router) {
 		w.Header().Set("Content-Type", "application/json")
 
 		var response response1
-		response = createPicture(picture)
+		var url string
+		url = s3method(picture.Picture, picture.Filname)
+		response = createPicture(picture, url)
 		if response.Error != nil {
 			w.WriteHeader(http.StatusInternalServerError)
 		} else {
@@ -401,7 +414,41 @@ func setRoutes(router *mux.Router) {
 	}).Methods(http.MethodPost)
 
 }
+func s3method(url string, filename string) string {
+	// Configurar cliente de S3
+	sess, err := session.NewSession(&aws.Config{
+		Region: aws.String("us-east-1"), // reemplaza por la región de tu bucket de S3
+	})
+	if err != nil {
+		panic(err)
+	}
+	s3Client := s3.New(sess)
 
+	/*imageBytes, err2 := base64.URLEncoding.DecodeString(url)
+	if err2 != nil {
+		fmt.Println(err2)
+		fmt.Println("No se pudo decodificar la imagen")
+
+	}*/
+
+	imageBytes, err2 := base64.StdEncoding.DecodeString(url)
+	if err2 != nil {
+		fmt.Println(err2)
+	}
+	buffer := bytes.NewBuffer(imageBytes)
+	// Subir imagen a S3
+	_, err = s3Client.PutObject(&s3.PutObjectInput{
+		Bucket: aws.String("practica1-g1-imagenes-semi1"),
+		Key:    aws.String(filename),
+		Body:   bytes.NewReader(buffer.Bytes()),
+	})
+	if err != nil {
+		fmt.Println(err)
+		fmt.Println("no se pudo subir la imagen")
+	}
+	return "https://practica1-g1-imagenes-semi1.s3.amazonaws.com/" + filename
+
+}
 func finUser(modelo login) Validacion {
 	fmt.Println("entre")
 	var responseval Validacion
@@ -523,7 +570,7 @@ func getPictures(id int) []pictureR {
 
 	return datos
 }
-func createuser(usuario user) response1 {
+func createuser(usuario user, url string) response1 {
 	//fmt.Println(usuario)
 	var res response1
 	bd, err := getDBq()
@@ -533,7 +580,7 @@ func createuser(usuario user) response1 {
 		res.Error = err
 		return res
 	}
-	query, err := bd.Query("call new_user('" + usuario.Username + "'," + "'" + usuario.Name + "','" + usuario.Password + "', '" + usuario.Picture + "')")
+	query, err := bd.Query("call new_user('" + usuario.Username + "'," + "'" + usuario.Name + "','" + usuario.Password + "', '" + url + "')")
 	fmt.Println(query.Next())
 	if err != nil {
 		res.SucessStatus = false
@@ -615,7 +662,7 @@ func updateAlbum(albuum1 albumUpdate) response1 {
 	return res
 }
 
-func createPicture(picture1 picture) response1 {
+func createPicture(picture1 picture, url string) response1 {
 	//fmt.Println(picture1)
 	var res response1
 	bd, err := getDBq()
@@ -625,7 +672,7 @@ func createPicture(picture1 picture) response1 {
 		res.Error = err
 		return res
 	}
-	query, err := bd.Query("call new_picture('" + picture1.Username + "'," + " '" + picture1.AlbumName + "'," + " '" + picture1.Picture + "')")
+	query, err := bd.Query("call new_picture('" + picture1.Username + "'," + " '" + picture1.AlbumName + "'," + " '" + url + "')")
 	fmt.Println(query)
 	if err != nil {
 		res.SucessStatus = false
@@ -641,7 +688,7 @@ func createPicture(picture1 picture) response1 {
 	return res
 }
 
-func Updateuser(usuario user) response1 {
+func Updateuser(usuario user, url string) response1 {
 	//fmt.Println(usuario)
 	var res response1
 	bd, err := getDBq()
@@ -651,7 +698,7 @@ func Updateuser(usuario user) response1 {
 		res.Error = err
 		return res
 	}
-	query, err := bd.Query("call update_user('" + usuario.Username + "'," + "'" + usuario.Name + "', '" + usuario.Picture + "')")
+	query, err := bd.Query("call update_user('" + usuario.Username + "'," + "'" + usuario.Name + "', '" + url + "')")
 	fmt.Println(query)
 	if err != nil {
 		res.SucessStatus = false
