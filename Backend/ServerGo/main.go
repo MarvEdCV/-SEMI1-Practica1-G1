@@ -1,6 +1,8 @@
 package main
 
 import (
+	"crypto/md5"
+
 	"fmt"
 	"log"
 	"time"
@@ -21,6 +23,11 @@ type Datos struct {
 	Name     string `json:"name"`
 }
 
+type Validacion struct {
+	Val      bool
+	Password string
+}
+
 type user struct {
 	Username string
 	Name     string
@@ -29,6 +36,10 @@ type user struct {
 	Picture  string
 }
 
+type login struct {
+	Username string
+	Password string
+}
 type album struct {
 	Username  string
 	AlbumName string
@@ -58,6 +69,13 @@ type response2 struct {
 	Name            string `json:"name"`
 	Picture_profile string `json:"picture_profile"`
 }
+
+type response3 struct {
+	SucessStatus interface{} `json:"successStatus"`
+	ExistUser    interface{} `json:"existUser"`
+	ErrorMessage interface{} `json:"errorMessage"`
+}
+
 type responseError2 struct {
 	Status  interface{} `json:"status"`
 	Message string      `json:"message"`
@@ -138,7 +156,7 @@ func setRoutes(router *mux.Router) {
 	// First enable CORS. If you don't need cors, comment the next line
 	enableCORS(router)
 	//primer endpoint
-	router.HandleFunc("/user", func(w http.ResponseWriter, r *http.Request) {
+	router.HandleFunc("/api/user", func(w http.ResponseWriter, r *http.Request) {
 		body, _ := ioutil.ReadAll(r.Body)
 		var usuario user
 		json.Unmarshal(body, &usuario)
@@ -152,6 +170,43 @@ func setRoutes(router *mux.Router) {
 			w.WriteHeader(http.StatusOK)
 		}
 		json.NewEncoder(w).Encode(response)
+	}).Methods(http.MethodPost)
+
+	//segundo endpoint
+	router.HandleFunc("/api/user/login", func(w http.ResponseWriter, r *http.Request) {
+		body, _ := ioutil.ReadAll(r.Body)
+		var modelAuth login
+		json.Unmarshal(body, &modelAuth)
+		w.Header().Set("Content-Type", "application/json")
+		var responseValidacion Validacion
+		responseValidacion = finUser(modelAuth)
+
+		var responselogin response3
+		if responseValidacion.Val == true {
+
+			passwordEn := md5.Sum([]byte(modelAuth.Password))
+
+			if fmt.Sprintf("%x", passwordEn) == responseValidacion.Password {
+				w.WriteHeader(http.StatusOK)
+				responselogin.SucessStatus = true
+				responselogin.ExistUser = true
+				responselogin.ErrorMessage = nil
+				json.NewEncoder(w).Encode(responselogin)
+			} else {
+				w.WriteHeader(http.StatusNotFound)
+				responselogin.SucessStatus = false
+				responselogin.ExistUser = true
+				responselogin.ErrorMessage = "Contraseña incorrecta"
+				json.NewEncoder(w).Encode(responselogin)
+			}
+
+		} else {
+			w.WriteHeader(http.StatusNotFound)
+			responselogin.SucessStatus = false
+			responselogin.ExistUser = false
+			responselogin.ErrorMessage = "El usuario no existe"
+			json.NewEncoder(w).Encode(responselogin)
+		}
 	}).Methods(http.MethodPost)
 
 	//tercer endpoint
@@ -290,6 +345,62 @@ func setRoutes(router *mux.Router) {
 
 }
 
+func finUser(modelo login) Validacion {
+	fmt.Println("entre")
+	var responseval Validacion
+	datos := []login{}
+	bd, err := getDBq()
+	if err != nil {
+		responseval.Val = false
+		responseval.Password = ""
+		return responseval
+	}
+	// Get rows so we can iterate them
+	rows, err := bd.Query("SELECT username, password FROM user WHERE username =" + "'" + modelo.Username + "'" + "AND deleted_at IS NULL ")
+	if err != nil {
+		fmt.Println("entre al error", err)
+		responseval.Val = false
+		responseval.Password = ""
+		return responseval
+	}
+	if rows.Next() {
+
+		fmt.Println("entre a true")
+		// In each step, scan one row
+		var datos2 login
+		err = rows.Scan(&datos2.Username, &datos2.Password)
+		fmt.Println("voy aca")
+		if err != nil {
+			responseval.Val = false
+			responseval.Password = ""
+			return responseval
+		}
+		// and append it to the array
+		datos = append(datos, datos2)
+		//if(datos)
+
+		fmt.Println(datos[0].Password)
+		if len(datos) > 0 {
+			responseval.Val = true
+			responseval.Password = datos[0].Password
+			return responseval
+
+		} else {
+
+			responseval.Val = false
+			responseval.Password = ""
+			return responseval
+		}
+
+	} else {
+
+		responseval.Val = false
+		responseval.Password = ""
+		return responseval
+	}
+
+}
+
 func createuser(usuario user) response1 {
 	//fmt.Println(usuario)
 	var res response1
@@ -383,7 +494,7 @@ func updateAlbum(albuum1 albumUpdate) response1 {
 }
 
 func createPicture(picture1 picture) response1 {
-	fmt.Println(picture1)
+	//fmt.Println(picture1)
 	var res response1
 	bd, err := getDBq()
 	if err != nil {
