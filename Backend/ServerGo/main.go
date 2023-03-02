@@ -4,10 +4,11 @@ import (
 	"bytes"
 	"crypto/md5"
 	"encoding/base64"
-
 	"fmt"
 	"log"
+	"path/filepath"
 	"strconv"
+	"strings"
 	"time"
 
 	"database/sql"
@@ -18,9 +19,9 @@ import (
 	"io/ioutil"
 
 	"github.com/aws/aws-sdk-go/aws"
+	"github.com/aws/aws-sdk-go/aws/credentials"
 	"github.com/aws/aws-sdk-go/aws/session"
 	"github.com/aws/aws-sdk-go/service/s3"
-
 	_ "github.com/go-sql-driver/mysql"
 	"github.com/gorilla/mux"
 )
@@ -76,7 +77,7 @@ type albumUpdate struct {
 type picture struct {
 	Username  string
 	AlbumName string
-	Filname   string
+	Filename  string
 	Picture   string
 }
 
@@ -150,7 +151,7 @@ func main() {
 	log.Fatal(server.ListenAndServe())
 }
 
-//funcion para la conexion de la base de datos
+// funcion para la conexion de la base de datos
 func getDBq() (*sql.DB, error) {
 	return sql.Open("mysql", "admin:seminario1-grupo1@tcp(database-photobucket.cr1hjnbhot0g.us-east-1.rds.amazonaws.com:3306)/db-photobucket")
 }
@@ -372,7 +373,7 @@ func setRoutes(router *mux.Router) {
 
 		var response response1
 		var url string
-		url = s3method(picture.Picture, picture.Filname)
+		url = s3method(picture.Picture, picture.Filename)
 		response = createPicture(picture, url)
 		if response.Error != nil {
 			w.WriteHeader(http.StatusInternalServerError)
@@ -415,40 +416,80 @@ func setRoutes(router *mux.Router) {
 
 }
 func s3method(url string, filename string) string {
-	// Configurar cliente de S3
-	sess, err := session.NewSession(&aws.Config{
-		Region: aws.String("us-east-1"), // reemplaza por la región de tu bucket de S3
-	})
+
+	// Decodifica la imagen en base64
+	imageBytes, err := base64.StdEncoding.DecodeString(url)
 	if err != nil {
-		panic(err)
-	}
-	s3Client := s3.New(sess)
-
-	/*imageBytes, err2 := base64.URLEncoding.DecodeString(url)
-	if err2 != nil {
-		fmt.Println(err2)
+		fmt.Println(err)
 		fmt.Println("No se pudo decodificar la imagen")
-
-	}*/
-
-	imageBytes, err2 := base64.StdEncoding.DecodeString(url)
-	if err2 != nil {
-		fmt.Println(err2)
 	}
-	buffer := bytes.NewBuffer(imageBytes)
-	// Subir imagen a S3
-	_, err = s3Client.PutObject(&s3.PutObjectInput{
-		Bucket: aws.String("practica1-g1-imagenes-semi1"),
-		Key:    aws.String(filename),
-		Body:   bytes.NewReader(buffer.Bytes()),
+
+	// Crea una sesión de AWS
+	sess, err := session.NewSession(&aws.Config{
+		Region: aws.String("us-east-1"), // Cambiar por la región deseada
+		Credentials: credentials.NewStaticCredentials(
+			"AKIAV2WSSDG75MMIAJ6P",
+			"rhNFYh+h5kvK1LeLbSP4HDKI3wwQPm8D5D6dKANx",
+			""),
 	})
 	if err != nil {
 		fmt.Println(err)
-		fmt.Println("no se pudo subir la imagen")
+		fmt.Println("No se pudo crear la sesion de AWS")
 	}
-	return "https://practica1-g1-imagenes-semi1.s3.amazonaws.com/" + filename
+	// Crea un nuevo cliente de Amazon S3
+	svc := s3.New(sess)
+
+	// Abre la imagen decodificada en un buffer de lectura
+	imageReader := bytes.NewReader(imageBytes)
+
+	// Obtener la extensión del archivo original
+	extension := filepath.Ext(filename)
+	contentType := getContentType(extension)
+
+	// Crear un nuevo nombre de archivo con el formato deseado
+	timestamp := time.Now().Format("20060102150405")
+	newFilename := fmt.Sprintf("%s-%s-Go%s", strings.TrimSuffix(filename, extension), timestamp, extension)
+
+	// Sube la imagen al bucket de S3
+	_, err = svc.PutObject(&s3.PutObjectInput{
+		Bucket:      aws.String("practica1-g1-imagenes-semi1"), // Cambiar por el nombre del bucket deseado
+		Key:         aws.String(newFilename),
+		Body:        imageReader,
+		ContentType: &contentType,
+	})
+	if err != nil {
+		fmt.Println(err)
+		fmt.Println("No se pudo subir la imagen al Bucket de S3")
+	}
+	urlStr := fmt.Sprintf("https://%s.s3.amazonaws.com/%s", "practica1-g1-imagenes-semi1", newFilename)
+	fmt.Printf("Imagen subida correctamente a S3 -> %s", newFilename)
+	return urlStr
 
 }
+
+func getContentType(extension string) string {
+	switch extension {
+	case ".bmp":
+		return "image/bmp"
+	case ".gif":
+		return "image/gif"
+	case ".ico":
+		return "image/x-icon"
+	case ".jpeg", ".jpg":
+		return "image/jpeg"
+	case ".png":
+		return "image/png"
+	case ".svg":
+		return "image/svg+xml"
+	case ".tiff":
+		return "image/tiff"
+	case ".webp":
+		return "image/webp"
+	default:
+		return ""
+	}
+}
+
 func finUser(modelo login) Validacion {
 	fmt.Println("entre")
 	var responseval Validacion
