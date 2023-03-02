@@ -5,6 +5,7 @@ import (
 
 	"fmt"
 	"log"
+	"strconv"
 	"time"
 
 	"database/sql"
@@ -22,10 +23,25 @@ type Datos struct {
 	Username string `json:"username"`
 	Name     string `json:"name"`
 }
-
+type albunes struct {
+	Album_id int
+	Name     string
+}
 type Validacion struct {
 	Val      bool
 	Password string
+}
+
+type usuarios struct {
+	Username string
+}
+
+type albumid struct {
+	Album_id int
+}
+
+type pictureR struct {
+	Url string
 }
 
 type user struct {
@@ -74,6 +90,16 @@ type response3 struct {
 	SucessStatus interface{} `json:"successStatus"`
 	ExistUser    interface{} `json:"existUser"`
 	ErrorMessage interface{} `json:"errorMessage"`
+}
+
+type response4 struct {
+	Status  interface{} `json:"status"`
+	Result  response5   `json:"result"`
+	Message string      `json:"message"`
+}
+
+type response5 struct {
+	Album map[string][]pictureR `json:"album"`
 }
 
 type responseError2 struct {
@@ -343,6 +369,37 @@ func setRoutes(router *mux.Router) {
 		json.NewEncoder(w).Encode(response)
 	}).Methods(http.MethodPost)
 
+	//noveno endpoint
+	router.HandleFunc("/api/album/get", func(w http.ResponseWriter, r *http.Request) {
+		body, _ := ioutil.ReadAll(r.Body)
+		var userb usuarios
+		json.Unmarshal(body, &userb)
+		w.Header().Set("Content-Type", "application/json")
+		albums := []albunes{}
+		var response response4
+		albums = append(albums, findAlbum(userb)...)
+		//fmt.Println(albums)
+		if len(albums) > 0 {
+			albumResponse := make(map[string][]pictureR)
+			for _, album := range albums {
+				pictureList := getPictures(album.Album_id)
+				fmt.Println(pictureList)
+
+				albumResponse[album.Name] = pictureList
+			}
+			w.WriteHeader(http.StatusOK)
+			response.Status = true
+			response.Result.Album = albumResponse
+		} else {
+			w.WriteHeader(http.StatusNotFound)
+			response.Status = false
+			response.Result.Album = nil
+			response.Message = "El usuario no tiene albums creados"
+		}
+
+		json.NewEncoder(w).Encode(response)
+	}).Methods(http.MethodPost)
+
 }
 
 func finUser(modelo login) Validacion {
@@ -401,6 +458,71 @@ func finUser(modelo login) Validacion {
 
 }
 
+func findAlbum(user usuarios) []albunes {
+	fmt.Println(user.Username)
+	var responseval Validacion
+	datos := []albunes{}
+	error := []albunes{}
+	bd, err := getDBq()
+	if err != nil {
+		responseval.Val = false
+		responseval.Password = ""
+		return datos
+	}
+	// Get rows so we can iterate them
+
+	rows, err := bd.Query("SELECT album_id, name FROM album WHERE username =" + "'" + user.Username + "'" + "AND deleted_at IS NULL ")
+	if err != nil {
+
+		return error
+	}
+	for rows.Next() {
+		// In each step, scan one row
+		var datos2 albunes
+		err = rows.Scan(&datos2.Album_id, &datos2.Name)
+		if err != nil {
+			return error
+		}
+		// and append it to the array
+		datos = append(datos, datos2)
+	}
+
+	return datos
+}
+
+func getPictures(id int) []pictureR {
+	fmt.Println(id)
+	var responseval Validacion
+	datos := []pictureR{}
+	error := []pictureR{}
+	bd, err := getDBq()
+	if err != nil {
+		responseval.Val = false
+		responseval.Password = ""
+		return datos
+	}
+	// Get rows so we can iterate them
+
+	rows, err := bd.Query("SELECT url FROM picture WHERE album_id = " + strconv.Itoa(id) + " AND deleted_at IS NULL ")
+	//fmt.Println("SELECT url FROM picture WHERE album_id =" + strconv.Itoa(id) + "AND deleted_at IS NULL ")
+	if err != nil {
+
+		return error
+	}
+	for rows.Next() {
+		// In each step, scan one row
+		var datos2 pictureR
+		err = rows.Scan(&datos2.Url)
+		if err != nil {
+			return error
+		}
+		// and append it to the array
+		datos = append(datos, datos2)
+		//fmt.Println(datos)
+	}
+
+	return datos
+}
 func createuser(usuario user) response1 {
 	//fmt.Println(usuario)
 	var res response1
