@@ -52,7 +52,7 @@ type albumid struct {
 }
 
 type pictureR struct {
-	Url string
+	Url string `json:"url"`
 }
 
 type user struct {
@@ -290,11 +290,13 @@ func setRoutes(router *mux.Router) {
 				responseError.Message = "El usuario no existe"
 				json.NewEncoder(w).Encode(responseError)
 			} else {
+				var arreglo []response2
 				if datos2.Username != "" {
 					fmt.Println("entre")
 					w.WriteHeader(http.StatusOK)
 					response = datos2
-					json.NewEncoder(w).Encode(response)
+					arreglo = append(arreglo, response)
+					json.NewEncoder(w).Encode(arreglo)
 				} else {
 					fmt.Println("entre2")
 					w.WriteHeader(http.StatusNotFound)
