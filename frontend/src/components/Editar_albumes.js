@@ -74,12 +74,23 @@ const Editar_albumes = (props) => {
         postFetch(URLS.album,request)
             .then((data)=>data.json())
             .then((data)=>{
+                console.log(data)
                 if(Array.isArray(data)){
-                    alert("Album creado exitosamente")
-                    window.location.reload(false);
+                    if(data[0].successStatus === 1){
+                        alert("Album creado exitosamente")
+                        window.location.reload(false);
+                    }else{
+                        alert(data.errorMessage)
+                        console.log(data.errorMessage)
+                    }
                 }else{
-                    alert(data.errorMessage)
-                    console.log(data.error)
+                    if(data.successStatus === 1){
+                        alert("Album creado exitosamente")
+                        window.location.reload(false);
+                    }else{
+                        alert(data.errorMessage)
+                        console.log(data.errorMessage)
+                    }
                 }
             })
         inputName.current.value = ""
@@ -91,6 +102,8 @@ const Editar_albumes = (props) => {
         const albumName = inputName.current.value
         const newAlbumName = prompt("Ingrese el nuevo nombre del album")
 
+        if(newAlbumName === null) return
+
         //Validaciones con respecto al nombre del album
         if(albumName === ""){
             alert("El nombre del album no puede estar vacio")
@@ -100,7 +113,17 @@ const Editar_albumes = (props) => {
             return
         }
         if(newAlbumName === `default-${username}`){
-            alert("No se asignar ese nombre a un album")    
+            alert("No se puede asignar ese nombre a un album")    
+            return
+        }else if(newAlbumName === ""){
+            alert("El nuevo nombre del album debe tener por lo menos un caracter")
+            return
+        }
+
+        //Se valida si exite un album con el mismo nombre
+        const found = albumes.some(el => el.value === newAlbumName)
+        if(found){
+            alert("Error al modificar el album. Ya existe un album con ese nombre")
             return
         }
 
@@ -112,11 +135,22 @@ const Editar_albumes = (props) => {
         putFetch(URLS.album,request)
             .then((data)=>data.json())
             .then((data)=>{
-                if(data[0].successStatus === 1){
-                    alert("Album modificado correactemente")
-                    window.location.reload(false);
+                if(Array.isArray(data)){
+                    if(data[0].successStatus === 1){
+                        alert("Album modificado correactemente")
+                        window.location.reload(false);
+                    }else{
+                        alert(data[0].errorMessage)
+                        console.log(data[0].errorMessage)
+                    }
                 }else{
-                    alert(data[0].errorMessage)
+                    if(data.successStatus === 1){
+                        alert("Album modificado correactemente")
+                        window.location.reload(false);
+                    }else{
+                        alert(data.errorMessage)
+                        console.log(data.errorMessage)
+                    }
                 }
             })
         inputName.current.value = ""
@@ -135,11 +169,22 @@ const Editar_albumes = (props) => {
         deleteFetch(URLS.album,request)
             .then((data)=>data.json())
             .then((data)=>{
-                if(data[0].successStatus === 1){
-                    alert("Album eliminado correactemente")
-                    window.location.reload(false);
+                if(Array.isArray(data)){
+                    if(data[0].successStatus === 1){
+                        alert("Album eliminado correactemente")
+                        window.location.reload(false);
+                    }else{
+                        alert(data.errorMessage)
+                        console.log(data.error)
+                    }
                 }else{
-                    alert(data[0].errorMessage)
+                    if(data.successStatus === 1){
+                        alert("Album eliminado correactemente")
+                        window.location.reload(false);
+                    }else{
+                        alert(data.errorMessage)
+                        console.log(data.error)
+                    }
                 }
             })
     }
@@ -165,7 +210,7 @@ const Editar_albumes = (props) => {
                     </div>   
                     <div className='del-album'>
                         <label htmlFor='album'>Album</label>
-                        <Select onChange={(e)=>setSelectedItem(e.value)} 
+                        <Select menuPosition='fixed' onChange={(e)=>setSelectedItem(e.value)} 
                                 type={'text'} 
                                 id='album' 
                                 name='album' 
