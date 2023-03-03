@@ -52,7 +52,7 @@ type albumid struct {
 }
 
 type pictureR struct {
-	Url string
+	Url string `json:"url"`
 }
 
 type user struct {
@@ -290,11 +290,13 @@ func setRoutes(router *mux.Router) {
 				responseError.Message = "El usuario no existe"
 				json.NewEncoder(w).Encode(responseError)
 			} else {
+				var arreglo []response2
 				if datos2.Username != "" {
 					fmt.Println("entre")
 					w.WriteHeader(http.StatusOK)
 					response = datos2
-					json.NewEncoder(w).Encode(response)
+					arreglo = append(arreglo, response)
+					json.NewEncoder(w).Encode(arreglo)
 				} else {
 					fmt.Println("entre2")
 					w.WriteHeader(http.StatusNotFound)
@@ -389,6 +391,7 @@ func setRoutes(router *mux.Router) {
 		var url string
 		url = s3method(picture.Picture, picture.Filename)
 		response = createPicture(picture, url)
+		fmt.Println(response)
 		if response.Error != nil {
 			w.WriteHeader(http.StatusInternalServerError)
 		} else {
@@ -736,6 +739,7 @@ func createPicture(picture1 picture, url string) response1 {
 		return res
 	}
 	query, err := bd.Query("call new_picture('" + picture1.Username + "'," + " '" + picture1.AlbumName + "'," + " '" + url + "')")
+	fmt.Println("call new_picture('" + picture1.Username + "'," + " '" + picture1.AlbumName + "'," + " '" + url + "')")
 	fmt.Println(query)
 	if err != nil {
 		res.SucessStatus = false
@@ -805,7 +809,7 @@ func DeleteAlbum(albuum1 album) response1 {
 
 func enableCORS(router *mux.Router) {
 	router.PathPrefix("/").HandlerFunc(func(w http.ResponseWriter, req *http.Request) {
-		w.Header().Set("Access-Control-Allow-Origin", AllowedCORSDomain)
+		w.Header().Set("Access-Control-Allow-Origin", "*")
 	}).Methods(http.MethodOptions)
 	router.Use(middlewareCors)
 }
@@ -813,9 +817,9 @@ func middlewareCors(next http.Handler) http.Handler {
 	return http.HandlerFunc(
 		func(w http.ResponseWriter, req *http.Request) {
 			// Just put some headers to allow CORS...
-			w.Header().Set("Access-Control-Allow-Origin", AllowedCORSDomain)
+			w.Header().Set("Access-Control-Allow-Origin", "*")
 			w.Header().Set("Access-Control-Allow-Credentials", "true")
-			w.Header().Set("Access-Control-Allow-Methods", "POST, GET, OPTIONS, PUT, DELETE")
+			w.Header().Set("Access-Control-Allow-Methods", "*")
 			w.Header().Set("Access-Control-Allow-Headers", "Accept, Content-Type, Content-Length, Accept-Encoding, X-CSRF-Token, Authorization")
 			// and call next handler!
 			next.ServeHTTP(w, req)
