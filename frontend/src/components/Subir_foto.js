@@ -112,7 +112,7 @@ const Subir_foto = (props) => {
                     </div>
                     <div >
                         <label htmlFor='album'>Album</label>
-                        <Select onChange={(e)=>setSelectedItem(e.value)} 
+                        <Select menuPosition='fixed' onChange={(e)=>setSelectedItem(e.value)} 
                                 type={'text'} 
                                 options={albumes}
                         />

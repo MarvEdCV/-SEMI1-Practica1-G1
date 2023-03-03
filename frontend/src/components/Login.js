@@ -4,7 +4,7 @@ import { useNavigate } from 'react-router-dom'
 import { Button } from '@mui/material'
 
 import './Login.css'
-import { url_servidor } from '../helpers/routes'
+import { URLS, url_servidor } from '../helpers/routes'
 import { postFetch } from '../helpers/peticiones'
 
 const Login = (props) => {
@@ -27,7 +27,7 @@ const Login = (props) => {
       password
     }
     console.log(datos)
-    postFetch(`${url_servidor}/api/user/login`,datos)
+    postFetch(URLS.login,datos)
       .then((data) =>data.json())
       .then((data) =>{
         console.log(data)
