@@ -115,6 +115,9 @@ const Editar_albumes = (props) => {
         if(newAlbumName === `default-${username}`){
             alert("No se puede asignar ese nombre a un album")    
             return
+        }else if(newAlbumName === ""){
+            alert("El nuevo nombre del album debe tener por lo menos un caracter")
+            return
         }
 
         //Se valida si exite un album con el mismo nombre
