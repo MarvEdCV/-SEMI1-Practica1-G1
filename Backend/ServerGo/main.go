@@ -43,6 +43,10 @@ type usuarios struct {
 	Username string
 }
 
+type initMethod struct {
+	Bienvenido string
+}
+
 type albumid struct {
 	Album_id int
 }
@@ -138,7 +142,7 @@ func main() {
 	// for example setupRoutesForGenres(router)
 
 	// Setup and start server
-	port := ":8000"
+	port := ":3010"
 
 	server := &http.Server{
 		Handler: router,
@@ -188,6 +192,16 @@ func getDatos() ([]Datos, error) {
 func setRoutes(router *mux.Router) {
 	// First enable CORS. If you don't need cors, comment the next line
 	enableCORS(router)
+	//init endpoint
+	router.HandleFunc("/api", func(w http.ResponseWriter, r *http.Request) {
+		var init initMethod
+		init.Bienvenido = "Bienvenido esta es la api de go del grupo 1 para la practica 1 - SEMINARIO DE SISTEMAS I"
+
+		w.WriteHeader(http.StatusOK)
+
+		json.NewEncoder(w).Encode(init)
+	}).Methods(http.MethodGet)
+
 	//primer endpoint
 	router.HandleFunc("/api/user", func(w http.ResponseWriter, r *http.Request) {
 		body, _ := ioutil.ReadAll(r.Body)
@@ -622,18 +636,26 @@ func createuser(usuario user, url string) response1 {
 		return res
 	}
 	query, err := bd.Query("call new_user('" + usuario.Username + "'," + "'" + usuario.Name + "','" + usuario.Password + "', '" + url + "')")
-	fmt.Println(query.Next())
 	if err != nil {
 		res.SucessStatus = false
 		res.ErrorMessage = "Hubo un error en la creación de usuario revise el servidor de go"
 		res.Error = err
 
 		return res
-	} else {
+	}
+
+	if query.Next() {
+
 		res.SucessStatus = 1
 		res.ErrorMessage = nil
 
+	} else {
+
+		res.SucessStatus = false
+		res.ErrorMessage = "El usuario ya existe"
+
 	}
+
 	return res
 }
 
