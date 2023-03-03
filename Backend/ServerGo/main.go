@@ -622,18 +622,26 @@ func createuser(usuario user, url string) response1 {
 		return res
 	}
 	query, err := bd.Query("call new_user('" + usuario.Username + "'," + "'" + usuario.Name + "','" + usuario.Password + "', '" + url + "')")
-	fmt.Println(query.Next())
 	if err != nil {
 		res.SucessStatus = false
 		res.ErrorMessage = "Hubo un error en la creación de usuario revise el servidor de go"
 		res.Error = err
 
 		return res
-	} else {
+	}
+
+	if query.Next() {
+
 		res.SucessStatus = 1
 		res.ErrorMessage = nil
 
+	} else {
+
+		res.SucessStatus = false
+		res.ErrorMessage = "El usuario ya existe"
+
 	}
+
 	return res
 }
 
