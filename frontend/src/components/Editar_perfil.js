@@ -54,7 +54,7 @@ const Editar_perfil = ({setUsername}) => {
         foto = foto64 !== "" ? foto64.split(",")[1] : ""
 
         //Se valida que la contraseña sea correcta
-        postFetch(`${url_servidor}/api/user/login`,{username,password})
+        postFetch(URLS.login,{username,password})
             .then((data) =>data.json())
             .then((data) =>{
                 console.log(data)
