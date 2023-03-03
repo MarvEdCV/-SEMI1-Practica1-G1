@@ -9,7 +9,7 @@ app.use(cors())
 const bodyParser = require('body-parser');
 const p1Routes = require('./routes/p1.routes')
 
-app.set("port",3010);
+app.set("port",4010);
 
 
 // Middlewares
