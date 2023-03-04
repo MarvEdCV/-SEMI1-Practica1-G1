@@ -133,6 +133,7 @@ func main() {
 			return
 		}
 	}
+	bd.Close()
 	fmt.Println("Connected to database")
 
 	router := mux.NewRouter()
@@ -185,7 +186,7 @@ func getDatos() ([]Datos, error) {
 		// and append it to the array
 		datos = append(datos, datos2)
 	}
-
+	bd.Close()
 	return datos, nil
 }
 
@@ -523,6 +524,7 @@ func finUser(modelo login) Validacion {
 		fmt.Println("entre al error", err)
 		responseval.Val = false
 		responseval.Password = ""
+		bd.Close()
 		return responseval
 	}
 	if rows.Next() {
@@ -535,6 +537,7 @@ func finUser(modelo login) Validacion {
 		if err != nil {
 			responseval.Val = false
 			responseval.Password = ""
+			bd.Close()
 			return responseval
 		}
 		// and append it to the array
@@ -545,12 +548,14 @@ func finUser(modelo login) Validacion {
 		if len(datos) > 0 {
 			responseval.Val = true
 			responseval.Password = datos[0].Password
+			bd.Close()
 			return responseval
 
 		} else {
 
 			responseval.Val = false
 			responseval.Password = ""
+			bd.Close()
 			return responseval
 		}
 
@@ -558,6 +563,7 @@ func finUser(modelo login) Validacion {
 
 		responseval.Val = false
 		responseval.Password = ""
+		bd.Close()
 		return responseval
 	}
 
@@ -586,8 +592,10 @@ func findAlbum(user usuarios) []albunes {
 		var datos2 albunes
 		err = rows.Scan(&datos2.Album_id, &datos2.Name)
 		if err != nil {
+			bd.Close()
 			return error
 		}
+		bd.Close()
 		// and append it to the array
 		datos = append(datos, datos2)
 	}
@@ -611,7 +619,7 @@ func getPictures(id int) []pictureR {
 	rows, err := bd.Query("SELECT url FROM picture WHERE album_id = " + strconv.Itoa(id) + " AND deleted_at IS NULL ")
 	//fmt.Println("SELECT url FROM picture WHERE album_id =" + strconv.Itoa(id) + "AND deleted_at IS NULL ")
 	if err != nil {
-
+		bd.Close()
 		return error
 	}
 	for rows.Next() {
@@ -619,12 +627,14 @@ func getPictures(id int) []pictureR {
 		var datos2 pictureR
 		err = rows.Scan(&datos2.Url)
 		if err != nil {
+			bd.Close()
 			return error
 		}
 		// and append it to the array
 		datos = append(datos, datos2)
 		//fmt.Println(datos)
 	}
+	bd.Close()
 
 	return datos
 }
@@ -643,7 +653,7 @@ func createuser(usuario user, url string) response1 {
 		res.SucessStatus = false
 		res.ErrorMessage = "Hubo un error en la creación de usuario revise el servidor de go"
 		res.Error = err
-
+		bd.Close()
 		return res
 	}
 
@@ -658,11 +668,12 @@ func createuser(usuario user, url string) response1 {
 		res.ErrorMessage = "El usuario ya existe"
 
 	}
-
+	bd.Close()
 	return res
 }
 
 func createAlbum(albuum1 album) response1 {
+
 	//fmt.Println(usuario)
 	var res response1
 	bd, err := getDBq()
@@ -678,16 +689,18 @@ func createAlbum(albuum1 album) response1 {
 		res.SucessStatus = false
 		res.ErrorMessage = "Hubo un error en la creación del album revise el servidor de go"
 		res.Error = err
-
+		bd.Close()
 		return res
 	} else {
 		res.SucessStatus = 1
 		res.ErrorMessage = nil
 
 	}
+	bd.Close()
 	return res
 }
 func updateAlbum(albuum1 albumUpdate) response1 {
+
 	//fmt.Println(usuario)
 	var res response1
 	bd, err := getDBq()
@@ -703,7 +716,7 @@ func updateAlbum(albuum1 albumUpdate) response1 {
 		res.SucessStatus = false
 		res.ErrorMessage = "Hubo un error en la actualización del album revise el servidor de go"
 		res.Error = err
-
+		bd.Close()
 		return res
 	} else {
 		res.SucessStatus = 1
@@ -725,6 +738,7 @@ func updateAlbum(albuum1 albumUpdate) response1 {
 		*/
 
 	}
+	bd.Close()
 	return res
 }
 
@@ -745,13 +759,14 @@ func createPicture(picture1 picture, url string) response1 {
 		res.SucessStatus = false
 		res.ErrorMessage = "Hubo un error en la creación de la foto revise el servidor de go"
 		res.Error = err
-
+		bd.Close()
 		return res
 	} else {
 		res.SucessStatus = 1
 		res.ErrorMessage = nil
 
 	}
+	bd.Close()
 	return res
 }
 
@@ -771,13 +786,14 @@ func Updateuser(usuario user, url string) response1 {
 		res.SucessStatus = false
 		res.ErrorMessage = "Hubo un error en la actualización de usuario revise el servidor de go"
 		res.Error = err
-
+		bd.Close()
 		return res
 	} else {
 		res.SucessStatus = 1
 		res.ErrorMessage = nil
 
 	}
+	bd.Close()
 	return res
 }
 
@@ -797,13 +813,14 @@ func DeleteAlbum(albuum1 album) response1 {
 		res.SucessStatus = false
 		res.ErrorMessage = "Hubo un error en la eliminación del album revise el servidor de go"
 		res.Error = err
-
+		bd.Close()
 		return res
 	} else {
 		res.SucessStatus = 1
 		res.ErrorMessage = nil
 
 	}
+	bd.Close()
 	return res
 }
 
