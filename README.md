@@ -5,6 +5,13 @@ Aplicación web similar a una aplicación para almacenamiento de fotos, esta per
 
 ## Integrantes
 
+| Nombre                       | Carné     |
+|------------------------------|-----------|
+| Marvin Eduardo Catalán Véliz | 201905554 |
+| Sara Paulina Medrano Cojulún | 201908053 |
+| Julio José Orellana Ruíz     | 201908120 |
+| José Adrian Aguilar Sánchez  | 201901704 |
+
 
 ## Descripcion de la arquitectura que utilizaron
 La arquitectura está diseñada para manejar cargas de trabajo de alta demanda y escalabilidad en AWS. Un balanceador de carga distribuye la carga de tráfico entrante entre las instancias EC2 en varias zonas de disponibilidad para garantizar la alta disponibilidad del sistema y se configura por la falla de cualquier instancia. Las instancias EC2 se utilizan para ejecutar los servidores y almacenar datos en el servicio S3 altamente escalable y duradero. se utilizaron dos Bucket de S3. Un bucket es de imagenes para almacenar todas las cargas de imagnes que se hagan mediande la pagina web, El otro bucket es el que almacena la pagina web dinamica. Además, la base de datos RDS se utiliza para almacenar datos estructurados y se conecta a las instancias EC2 para proporcionar un almacenamiento de datos confiable y escalable. Esta arquitectura asegura que los servicios sean altamente disponibles, escalables y seguros.
