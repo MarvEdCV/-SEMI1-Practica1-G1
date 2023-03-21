@@ -26,7 +26,7 @@ const Login = (props) => {
       username,
       password
     }
-    console.log(datos)
+    //console.log(datos)
     postFetch(URLS.login,datos)
       .then((data) =>data.json())
       .then((data) =>{
