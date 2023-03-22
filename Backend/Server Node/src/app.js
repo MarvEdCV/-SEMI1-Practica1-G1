@@ -15,7 +15,8 @@ app.set("port",3010);
 
 // Middlewares
 app.use(morgan("dev"));
-app.use(bodyParser.json());
+app.use(bodyParser.json({limit: '10mb'}));
+app.use(bodyParser.urlencoded({limit: '10mb', extended: true}));
 app.use("/api",p1Routes.router);
 app.use("/api",p1Routesv2.router);
 /**
