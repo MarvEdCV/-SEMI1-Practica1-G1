@@ -153,6 +153,16 @@ router.post("/album/get", async (req, res) => {
 
 });
 
+router.post("/user/login/camera", (req, res) => {
+    P1Model.create(req.app).loginCamera(req.body.username,req.body.picture)
+        .then(data => {
+            res.status(httpCode.OK).json(data);
+        }).catch(err => {
+        console.log(err);
+        res.status(httpCode.INTERNAL_SERVER_ERROR).json(err);
+    })
+})
+
 
 module.exports = {router}
 

@@ -1,5 +1,5 @@
 const {Database} = require('./../database/database')
-
+const compareImages = require('./../utils/compare.images');
 /**
  * Clase que extiende de la configuración de la base de datos
  */
@@ -46,6 +46,16 @@ class P1Model extends Database{
 
     getPicture(album_id){
         return this.queryView({sql: `SELECT url FROM picture WHERE album_id = ${album_id} AND deleted_at IS NULL`});
+    }
+
+    getFotoPerfilUsuario(username){
+        return this.queryView({sql: `SELECT p.url FROM picture p JOIN album a ON a.album_id = p.album_id WHERE a.name = 'default-${username}' ORDER BY p.updated_at DESC LIMIT 1`})
+    }
+    async loginCamera(username,picture){
+        const currentPicture = await this.getFotoPerfilUsuario(username);
+        console.log(currentPicture[0].url);
+        await compareImages(currentPicture[0].url, picture)
+        return this.queryView({sql: `SELECT url FROM picture LIMIT 1`});
     }
 
 }
