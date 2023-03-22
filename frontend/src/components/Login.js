@@ -54,6 +54,9 @@ const Login = (props) => {
             <Button variant='contained' onClick={() => navegar('/registro')}>Registrarse</Button>
             <Button type='submit' variant='contained'>Ingresar</Button>
           </div>
+          <div>
+            <Button onClick={() => navegar('/login-camara')}>Iniciar sesion con reconocimiento facial</Button>
+          </div>
         </form>
       </div>
     </div>

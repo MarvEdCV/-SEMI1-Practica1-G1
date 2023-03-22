@@ -1,3 +1,5 @@
+
+/*----------------------------LOGIN------------------------------*/
 .login{
     display: flex;
     position: absolute;
@@ -42,9 +44,18 @@
     width: 48%;
 }
 
+/*----------------------LOGIN RECONOCIMIENTO------------------------*/
+.login-form-input.login-camara{
+    height: 80%;
+}
+
+.login-cam{
+    width: 70%;
+}
 
 
 
+/*----------------------------REGISTRO------------------------------*/
 .register{
     display: flex;
     width: 60%;

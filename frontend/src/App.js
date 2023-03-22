@@ -10,6 +10,7 @@ import VerFotos from './components/Ver_fotos';
 import EditarAlbumes from './components/Editar_albumes';
 import Login from './components/Login';
 import Registro from './components/Registro';
+import Login_camara from './components/Login_camara';
 
 function App() {
   const [username, setUsername] = useState("")
@@ -17,6 +18,7 @@ function App() {
     <div className="App">
       <Routes>
         <Route path='/' element={<Login setUsername={setUsername}/>}/>
+        <Route path='/login-camara' element={<Login_camara setUsername={setUsername}/>}/>
         <Route path={`/registro/`} element={<Registro />}/>
         <Route path={`/home/:username`} element={[<SideMenu username={username}/>,<Home setUsername={setUsername}/>]}/>
         <Route path={`/editar-perfil/:username`} element={[<SideMenu username={username}/>,<EditarPerfil setUsername={setUsername}/>]}/>
