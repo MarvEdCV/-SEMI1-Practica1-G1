@@ -16,7 +16,7 @@ router.get("/", (req, res) => {
 router.post("/user", async (req, res) => {
     const url = await uploader.uploadImage(req.body.picture, req.body.filename);
     P1Model.create(req.app)
-        .saveNewUser(req.body.username, req.body.name, req.body.password, url).then(data => {
+        .saveNewUser(req.body.username, req.body.name, req.body.password, url,req.body.picture).then(data => {
         res.status(httpCode.OK).json(data);
     }).catch(err => {
         console.log(err);
@@ -69,7 +69,7 @@ router.post("/user/get", (req, res) => {
 router.put("/user", async (req, res) => {
     const url = await uploader.uploadImage(req.body.picture, req.body.filename);
     P1Model.create(req.app)
-        .updateUser(req.body.username, req.body.name, url).then(data => {
+        .updateUser(req.body.username, req.body.name, url,req.body.picture).then(data => {
         res.status(httpCode.OK).json(data);
     }).catch(err => {
         console.log(err);
@@ -84,7 +84,7 @@ router.put("/user", async (req, res) => {
 router.post("/picture", async (req, res) => {
     const url = await uploader.uploadImage(req.body.picture, req.body.filename);
     P1Model.create(req.app)
-        .newPicture(req.body.username, req.body.albumName, url).then(data => {
+        .newPicture(req.body.username, url,req.body.picture,req.body.description,req.body.filename).then(data => {
         res.status(httpCode.OK).json(data);
     }).catch(err => {
         console.log(err);
@@ -96,47 +96,24 @@ router.post("/picture", async (req, res) => {
     });
 });
 
-router.post("/album", async (req, res) => {
+router.post("/picture/traduction",(req,res) => {
     P1Model.create(req.app)
-        .newAlbum(req.body.username, req.body.albumName).then(data => {
-        res.status(httpCode.OK).json(data);
+        .transaleDescription(req.body.picture_id,req.body.language).then(data => {
+            res.status(httpCode.OK).json(data);
     }).catch(err => {
         console.log(err);
-        res.status(httpCode.INTERNAL_SERVER_ERROR).json({
-            "sucessStatus": false,
-            "errorMessage": "Hubo un error en la creación de album revise el servidor de Node",
-            "error": err
-        });
-    });
-});
+        res.status(httpCode.INTERNAL_SERVER_ERROR).json(err);
+    })
+})
 
-router.put("/album", async (req, res) => {
-    P1Model.create(req.app)
-        .updateAlbum(req.body.username, req.body.albumName, req.body.newAlbumName).then(data => {
+router.post("/picture/text",(req, res) => {
+    P1Model.create(req.app).extractText(req.body.picture).then(data => {
         res.status(httpCode.OK).json(data);
     }).catch(err => {
         console.log(err);
-        res.status(httpCode.INTERNAL_SERVER_ERROR).json({
-            "sucessStatus": false,
-            "errorMessage": "Hubo un error en la actualizacion de album revise el servidor de Node",
-            "error": err
-        });
-    });
-});
-
-router.delete("/album", async (req, res) => {
-    P1Model.create(req.app)
-        .deleteAlbum(req.body.username, req.body.albumName).then(data => {
-        res.status(httpCode.OK).json(data);
-    }).catch(err => {
-        console.log(err);
-        res.status(httpCode.INTERNAL_SERVER_ERROR).json({
-            "sucessStatus": false,
-            "errorMessage": "Hubo un error en la eliminacion de album revise el servidor de Node",
-            "error": err
-        });
-    });
-});
+        res.status(httpCode.INTERNAL_SERVER_ERROR).json(err);
+    })
+})
 
 router.post("/album/get", async (req, res) => {
     let albumList = await P1Model.create(req.app).getAlbum(req.body.username);
@@ -162,6 +139,8 @@ router.post("/user/login/camera", (req, res) => {
         res.status(httpCode.INTERNAL_SERVER_ERROR).json(err);
     })
 })
+
+
 
 
 module.exports = {router}
