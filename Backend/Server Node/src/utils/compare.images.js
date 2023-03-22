@@ -1,5 +1,4 @@
 const AWS = require('aws-sdk');
-const request = require('request-promise-native');
 import config from '../config';
 
 // Configurar las credenciales de AWS
@@ -12,8 +11,9 @@ AWS.config.update({
 
 const rekognition = new AWS.Rekognition();
 
-async function compareImages(imageUrl, base64Image) {
+async function compareImages(imageUrl, imageUrl2) {
     const imageName = imageUrl.split('/').pop();
+    const imageName2 = imageUrl2.split('/').pop();
     try {
 
         const params = {
@@ -27,14 +27,12 @@ async function compareImages(imageUrl, base64Image) {
             TargetImage: {
                 S3Object: {
                     Bucket: config.s3.bucketName,
-                    Name: imageName
+                    Name: imageName2
                 },
             }
         };
-        console.log(params)
         const result = await rekognition.compareFaces(params).promise();
-        console.log(result);
-        return params;
+        return result;
     } catch (error) {
         console.error(error);
         throw error;
