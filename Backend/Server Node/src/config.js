@@ -20,5 +20,10 @@ export default {
         region: process.env.REKOGNITION_REGION,
         accessKeyId: process.env.REKOGNITION_ACCESS_KEY_ID,
         secretAccessKey: process.env.REKOGNITION_SECRET_ACCESS_KEY
+    },
+    translate: {
+        region: process.env.TRASLATE_REGION,
+        accessKeyId: process.env.TRASLATE_ACCESS_KEY_ID,
+        secretAccessKey: process.env.TRASLATE_SECRET_ACCESS_KEY
     }
 }
