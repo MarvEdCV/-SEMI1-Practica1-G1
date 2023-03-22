@@ -1,11 +1,10 @@
-
-export const url_servidor = "http://localhost:3010"
+export const url_servidor = "http://lb-practica1-332677503.us-east-2.elb.amazonaws.com/api";
 
 export const URLS = {
-    user:`${url_servidor}/api/user`,
-    perfil:`${url_servidor}/api/user/get`,
-    login: `${url_servidor}/api/user/login`,
-    album: `${url_servidor}/api/album`,
-    album_get: `${url_servidor}/api/album/get`,
-    picture: `${url_servidor}/api/picture`
-}
+  user: `${url_servidor}/user`,
+  perfil: `${url_servidor}/user/get`,
+  login: `${url_servidor}/user/login`,
+  album: `${url_servidor}/album`,
+  album_get: `${url_servidor}/album/get`,
+  picture: `${url_servidor}/picture`,
+};

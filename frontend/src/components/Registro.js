@@ -4,12 +4,14 @@ import { Button } from '@mui/material'
 import { postFetch } from '../helpers/peticiones'
 import Webcam from "react-webcam";
 import { URLS } from '../helpers/routes';
+import FileBase64 from 'react-file-base64'
 
 import './Login.css'
 
 
 const Registro = () => {
-    const [fotoCam, setFotoCam] = useState("")
+    const [foto64, setFoto64] = useState("")
+    const [filename, setFilename] = useState("")
     const webcamRef = useRef(null)
 
     //useNavigate para cambiar la url para cargar otros componentes
@@ -21,7 +23,7 @@ const Registro = () => {
     const handleSubmit = (event) =>{
         event.preventDefault();
 
-        if(fotoCam === ""){
+        if(foto64 === ""){
             alert("Para registrarse debe de tomarse una foto")
             return
         }
@@ -32,7 +34,7 @@ const Registro = () => {
         name = event.target[1].value
         password = event.target[2].value
         passwordver = event.target[3].value
-        picture = fotoCam.split(",")[1]
+        picture = foto64.split(",")[1]
         console.log(picture)
         if(password !== passwordver){
             alert("Las contraseñas no coinciden")
@@ -76,20 +78,32 @@ const Registro = () => {
   return (
     <div className='login'>
         <div className='register'>
-            <div className='register-image'>
-                    {fotoCam ? 
-                        <img src={fotoCam} className='register-cam'></img>
+            <div className='register-image'>  
+                    {foto64 ? 
+                        <img src={foto64} className='register-cam'></img>
                         :
                         <Webcam ref={webcamRef} className='register-cam'/>
                     }
-                    {fotoCam ?
-                        <Button onClick={()=>setFotoCam("")} color="error">Volver a tomar foto</Button>
+                    {foto64 ?
+                        <Button onClick={()=>setFoto64("")} color="error">Volver a tomar foto</Button>
                         :
                         <Button onClick={()=>{
-                            setFotoCam(webcamRef.current.getScreenshot())
-                            console.log(fotoCam)
+                            setFoto64(webcamRef.current.getScreenshot())
+                            setFilename("perfil.webp")
+                            //console.log(foto64)
                         }}>Tomar foto</Button>
                     }
+                    <Button variant="contained" component="label" style={{"marginTop":"30px"}}>
+                        Subir
+                        
+                    <div style={{"display":"none"}}>
+                        <FileBase64 hidden multiple={false} onDone={({name,base64})=>{
+                            setFoto64(base64)
+                            setFilename(name)
+                        }
+                        } type="file" />
+                    </div>
+                    </Button>
             </div>
             <div className='login-form'>
                 <h1>Registrarse</h1>
