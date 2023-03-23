@@ -34,12 +34,12 @@ const Home = (props) => {
             <div className='info'>
                 <div className='input-text'>
                     <label htmlFor='username'>Nombre de usuario</label>
-                    <input type={'text'} id='username' value={dataUser.username} readOnly></input>
-                </div>
-                <div className='input-text'>
+                    <h3>{dataUser.username}</h3>
                     <label htmlFor='nombre'>Nombre completo</label>
-                    <input type={'text'} id='nombre'  value={dataUser.name} readOnly></input>
+                    <h4>{dataUser.name}</h4>
+                   
                 </div>
+                
             </div>
         </div>
     </div>

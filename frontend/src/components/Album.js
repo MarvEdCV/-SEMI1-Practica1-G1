@@ -11,10 +11,12 @@ const Album = ({nombre,fotos,username}) => {
     }
 
   return (
+    <>
+     <div className='nombre'>
+    <h2>{nombre}</h2>
+</div>
     <div className='album'>
-        <div className='nombre'>
-            <h2>{nombre}</h2>
-        </div>
+       
         <div className='fotos'>
             {
             fotos.map(foto =>( 
@@ -30,6 +32,8 @@ const Album = ({nombre,fotos,username}) => {
         </div>
        
     </div>
+    </>
+   
   )
 }
 
