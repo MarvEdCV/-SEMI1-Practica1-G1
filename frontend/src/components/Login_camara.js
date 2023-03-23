@@ -27,16 +27,16 @@ const Login_camara = (props) => {
         return 
       }
 
-      let username,password
+      let username,picture
       username = event.target[0].value
-      password = webcamRef.current.getScreenshot()
+      picture = webcamRef.current.getScreenshot().split(",")[1]
   
       let datos = {
         username,
-        password    //La password es la foto en base64
+        picture    //La password es la foto en base64
       }
       console.log(datos)
-      /* postFetch(URLS.login,datos)
+      postFetch(URLS.login_camera,datos)
         .then((data) =>data.json())
         .then((data) =>{
           console.log(data)
@@ -49,7 +49,7 @@ const Login_camara = (props) => {
             event.target[0].value = ""
             event.target[1].value = ""
           }
-        }) */
+        })
     }
   
     return (
@@ -57,7 +57,7 @@ const Login_camara = (props) => {
         <div className='login-form'>
           <h1 style={{"margin":"0"}}>Reconocimiento facial</h1>
           <form className='login-form-input  login-camara' onSubmit={handleSubmit}>
-            <TextField id="standard-basic" label="Username" variant="standard" />
+            <TextField id="standard-basic" label="Username" variant="standard"/>
             <Webcam ref={webcamRef} className='login-cam'/>
             <div className='login-botones'>
               <Button variant='contained' onClick={() => navegar('/')}>Regresar</Button>

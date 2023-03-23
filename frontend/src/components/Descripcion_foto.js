@@ -31,8 +31,8 @@ const Descripcion_foto = (props) => {
 
     useEffect(()=>{
         if(selectedLang === "") return
-        console.log(picture_id)
-        console.log(selectedLang)
+        //onsole.log(picture_id)
+        //console.log(selectedLang)
         const picture = {
             picture_id,
             language: selectedLang
@@ -41,7 +41,6 @@ const Descripcion_foto = (props) => {
         postFetch(URLS.traduction,picture)
             .then((data)=>data.json())
             .then((data)=>{
-                console.log(data)
                 settraduction(data.traduction)
                 setDescription(data.description)
                 setPictureUrl(data.url)

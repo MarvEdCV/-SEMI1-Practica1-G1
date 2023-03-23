@@ -1,0 +1,14 @@
+.extracted-text{
+    min-height: 10rem;
+    margin-top: 2rem;
+}
+
+.contenedor-image-extract{
+    height: 10rem;
+}
+
+.image-extract{
+    max-width: 50%;
+    max-height: 100%;
+    margin-left: 2rem;
+}

@@ -7,5 +7,7 @@ export const URLS = {
   album: `${url_servidor}/album`,
   album_get: `${url_servidor}/album/get`,
   picture: `${url_servidor}/picture`,
-  traduction: `${url_servidor}/picture/traduction`
+  traduction: `${url_servidor}/picture/traduction`,
+  login_camera: `${url_servidor}/user/login/camera`,
+  extract_text: `${url_servidor}/picture/text`
 };

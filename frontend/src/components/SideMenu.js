@@ -54,6 +54,14 @@ const SideMenu = ({username}) => {
                     <Link to={`/editar-perfil/${username}`} style={itemStyle}>Editar perfil</Link>
                 </NavText>
             </NavItem>
+            <NavItem eventKey="extraer-texto">
+                <NavIcon>
+                <i className="fa fa-fw fa-home" style={{ fontSize: '1.75em' }} />
+                </NavIcon>
+                <NavText style={itemStyle}>
+                    <Link to={`/extraer-texto/${username}`} style={itemStyle}>Extraer texto</Link>
+                </NavText>
+            </NavItem>
             <NavItem eventKey="editar-albumes">
                 <NavIcon>
                 <i className="fa fa-fw fa-home" style={{ fontSize: '1.75em' }} />
