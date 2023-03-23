@@ -1,4 +1,4 @@
-export const url_servidor = "http://lb-practica1-332677503.us-east-2.elb.amazonaws.com/api";
+export const url_servidor = "http://localhost:3010/api";
 
 export const URLS = {
   user: `${url_servidor}/user`,
