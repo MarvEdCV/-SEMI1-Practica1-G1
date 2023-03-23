@@ -54,12 +54,12 @@ const SideMenu = ({username}) => {
                     <Link to={`/editar-perfil/${username}`} style={itemStyle}>Editar perfil</Link>
                 </NavText>
             </NavItem>
-            <NavItem eventKey="editar-albumes">
+            <NavItem eventKey="boot">
                 <NavIcon>
                 <i className="fa fa-fw fa-home" style={{ fontSize: '1.75em' }} />
                 </NavIcon>
                 <NavText style={itemStyle}>
-                    <Link to={`/editar-albumes/${username}`} style={itemStyle}>Editar albumes</Link>
+                    <Link to={`/boot/${username}`} style={itemStyle}>Asistente boot</Link>
                 </NavText>
             </NavItem>
             <NavItem eventKey="cerrar-sesion">

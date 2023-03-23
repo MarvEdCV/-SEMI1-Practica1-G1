@@ -122,7 +122,7 @@ const Subir_foto = (props) => {
                     <div className='input-text'>
                         
                         <br></br>
-                            <Button variant="contained" component="label" color='warning'  style={{"width":"100%"}} >
+                            <Button variant="contained" component="label" color='error'  style={{"width":"100%"}} >
                                 Seleccionar Foto
                             <div style={{"display":"none"}}>
                                 <FileBase64 hidden multiple={false} onDone={({name,base64})=>{
