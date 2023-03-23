@@ -89,7 +89,7 @@ class P1Model extends Database{
     async transaleDescription(pictureId,language){
         const picture = await this.queryView({sql: `SELECT * FROM picture WHERE picture_id = ${pictureId}`});
         const result = await translateText(picture[0].description,language)
-        return result;
+        return {"description":picture[0].description,"traduction":result,"url":picture[0].url};
     }
 
     extractText(base64Image){

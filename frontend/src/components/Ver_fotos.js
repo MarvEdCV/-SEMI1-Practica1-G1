@@ -41,8 +41,7 @@ const Ver_fotos = (props) => {
             setAlbumes(albumes=>[...albumes,album])
         })
     }) 
-}, [])
-
+  }, [])  
 
 
   return (
@@ -55,7 +54,7 @@ const Ver_fotos = (props) => {
               <div className='contenedor-fotos'>
                 {
                   albumes.map(({nombre,fotos})=>(
-                    <Album nombre={nombre} fotos={fotos}/>
+                    <Album nombre={nombre} fotos={fotos} username={username}/>
                   ))
                 }
               </div>

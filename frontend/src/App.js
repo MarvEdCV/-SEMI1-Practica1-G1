@@ -25,7 +25,7 @@ function App() {
         <Route path={`/editar-perfil/:username`} element={[<SideMenu username={username}/>,<EditarPerfil setUsername={setUsername}/>]}/>
         <Route path={`/subir-foto/:username`} element={[<SideMenu username={username}/>,<SubirFoto setUsername={setUsername}/>]}/>
         <Route path={`/ver-fotos/:username`} element={[<SideMenu username={username}/>,<VerFotos setUsername={setUsername}/>]}/>
-        <Route path={`/descripcion-foto/:username`} element={[<SideMenu username={username}/>,<Descripcion_foto setUsername={setUsername}/>]}/>
+        <Route path={`/descripcion-foto/:username/:picture_id`} element={[<SideMenu username={username}/>,<Descripcion_foto setUsername={setUsername}/>]}/>
         <Route path={`/editar-albumes/:username`} element={[<SideMenu username={username}/>,<EditarAlbumes setUsername={setUsername}/>]}/>
       </Routes>
     </div>
