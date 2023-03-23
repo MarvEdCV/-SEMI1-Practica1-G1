@@ -12,7 +12,8 @@ const Home = (props) => {
     const [dataUser, setDataUser] = useState({
         picture_profile:"",
         name:"",
-        username:""
+        username:"",
+        labels:[""]
     })
 
     useEffect(() => {
@@ -20,15 +21,22 @@ const Home = (props) => {
         console.log(username)
         getDataUser(username,setDataUser)
 
+
         props.setUsername(username)
     }, [])
-    
 
   return (
     <React.Fragment>
     <div className='contenedor'>
         <div className='contenedor-izq'>
-            <Perfil imagen={dataUser.picture_profile }/>
+        <div className='contenedor-izq-items'>  
+            <img src={dataUser.picture_profile}></img>
+            <ul>
+                {dataUser.labels.map((etiqueta) =>(
+                    <li>{etiqueta}</li>
+                ))}
+            </ul>
+        </div>
         </div>
         <div className='contenedor-der'>
             <div className='info'>

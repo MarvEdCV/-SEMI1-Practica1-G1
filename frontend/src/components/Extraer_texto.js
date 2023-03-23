@@ -71,6 +71,11 @@ const Extraer_texto = (props) => {
                         position: toast.POSITION.TOP_RIGHT
                       });
                 })
+                .catch((error) =>{
+                    toast.error("Lo sentimos hubo un error intenta de nuevo", {
+                        position: toast.POSITION.TOP_RIGHT
+                      });
+                })
 
         }
     }

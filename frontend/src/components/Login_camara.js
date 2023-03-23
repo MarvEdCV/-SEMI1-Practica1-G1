@@ -7,6 +7,7 @@ import './Login.css'
 import { URLS, url_servidor } from '../helpers/routes'
 import { postFetch } from '../helpers/peticiones'
 import Webcam from "react-webcam";
+import { toast, ToastContainer } from 'react-toastify'
 
 
 const Login_camara = (props) => {
@@ -23,13 +24,15 @@ const Login_camara = (props) => {
   
       let foto = webcamRef.current.getScreenshot()
       if(!foto){
-        alert("No se pudo capturar la foto")
+        toast.error("Error al capturar la foto, intente de nuevo", {
+          position: toast.POSITION.TOP_RIGHT
+        });
         return 
       }
-
+      
       let username,picture
       username = event.target[0].value
-      picture = webcamRef.current.getScreenshot().split(",")[1]
+      picture = foto.split(",")[1]
   
       let datos = {
         username,
@@ -40,25 +43,38 @@ const Login_camara = (props) => {
         .then((data) =>data.json())
         .then((data) =>{
           console.log(data)
-          if(data.successStatus === true){
+          if(data.FaceMatches.length>0){
             props.setUsername(username)
-            navegar(`home/${username}`)
+            navegar(`/home/${username}`)
+          }else if(data.FaceMatches.length===0){
+            toast.error("No se ha iniciado sesion, el rostro no coincide", {
+              position: toast.POSITION.TOP_RIGHT
+            });
           }else{
-            alert(data.errorMessage)
-            //Se vacian los input
-            event.target[0].value = ""
-            event.target[1].value = ""
+            toast.error("Error al iniciar sesion, intente de nuevo", {
+              position: toast.POSITION.TOP_RIGHT
+            });
           }
         })
+        .catch((error) =>{
+          toast.error("Lo sentimos hubo un error intenta de nuevo", {
+              position: toast.POSITION.TOP_RIGHT
+            });
+      })
     }
   
     return (
       <div className='login'>
+        <ToastContainer />
         <div className='login-form'>
           <h1 style={{"margin":"0"}}>Reconocimiento facial</h1>
           <form className='login-form-input  login-camara' onSubmit={handleSubmit}>
-            <TextField id="standard-basic" label="Username" variant="standard"/>
-            <Webcam ref={webcamRef} className='login-cam'/>
+            <TextField id="standard-basic" label="Username" variant="standard" required/>
+            <Webcam 
+              ref={webcamRef} 
+              className='login-cam'
+              screenshotFormat='image/jpeg'
+            />
             <div className='login-botones'>
               <Button variant='contained' onClick={() => navegar('/')}>Regresar</Button>
               <Button type='submit' variant='contained'>Ingresar</Button>
