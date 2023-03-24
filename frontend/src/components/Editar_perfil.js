@@ -7,6 +7,8 @@ import './Editar_perfil.css'
 import { postFetch, putFetch } from '../helpers/peticiones';
 import { URLS, url_servidor } from '../helpers/routes';
 import { useParams } from 'react-router-dom';
+import { ToastContainer, toast } from 'react-toastify';
+import "react-toastify/dist/ReactToastify.css";
 
 
 const Editar_perfil = ({setUsername}) => {
@@ -54,16 +56,26 @@ const Editar_perfil = ({setUsername}) => {
         foto = foto64 !== "" ? foto64.split(",")[1] : ""
 
         //Se valida que la contraseña sea correcta
+        toast.warning("Editando Perfil!!", {
+            position: toast.POSITION.TOP_RIGHT
+          });
         postFetch(URLS.login,{username,password})
             .then((data) =>data.json())
             .then((data) =>{
                 console.log(data)
                 if(!data.successStatus){
-                    alert("Contraseña incorrecta")
+                    toast.error("Contraseña incorrecta", {
+                        position: toast.POSITION.TOP_RIGHT
+                      });
+                    
                     return
                 }
                 if(foto64 === ""){
-                    alert("Para editar perfil debes de pones una nueva foto")
+                    toast.error("Para editar perfil debes de pones una nueva foto", {
+                        position: toast.POSITION.TOP_RIGHT
+                      });
+                    
+                    
                     return
                 }
                 setUsername(username) //Se vuelve a setear el username del usuario
@@ -82,18 +94,28 @@ const Editar_perfil = ({setUsername}) => {
                         console.log(data)
                         if(Array.isArray(data)){
                             if(data[0].successStatus){
-                                alert("Se han realizado los cambios correctamente")
+                                toast.success("Perfil editado con exito !", {
+                                    position: toast.POSITION.TOP_RIGHT
+                                  });
                                 window.location.reload(false);
                                 return
                             }
-                            alert(data.errorMessage)
+                            toast.error(data.errorMessage, {
+                                position: toast.POSITION.TOP_RIGHT
+                              });
+                            
                         }else{
                             if(data.successStatus){
-                                alert("Se han realizado los cambios correctamente")
+                                toast.success("Perfil editado con exito !", {
+                                    position: toast.POSITION.TOP_RIGHT
+                                  });
                                 window.location.reload(false);
                                 return
                             }
-                            alert(data.errorMessage)
+                            toast.error(data.errorMessage, {
+                                position: toast.POSITION.TOP_RIGHT
+                              });
+                            
                         }
                         
                     })
@@ -102,13 +124,18 @@ const Editar_perfil = ({setUsername}) => {
 
   return (
     <div className='editor-perfil'>
+         <ToastContainer />
         <div className='contenedor'>
             <div className='contenedor-izq'>
                 <div className='contenedor-izq-items'>  
                     {foto64 ? 
                         <img src={foto64} className='register-cam'></img>
                         :
-                        <Webcam ref={webcamRef} className='register-cam'/>
+                        <Webcam 
+                            ref={webcamRef} 
+                            className='register-cam' 
+                            screenshotFormat='image/jpeg'
+                        />
                     }
                     {foto64 ?
                         <Button onClick={()=>setFoto64("")} color="error">Volver a tomar foto</Button>
@@ -135,20 +162,20 @@ const Editar_perfil = ({setUsername}) => {
                 <form className='info' onSubmit={handleSubmit}>
                     <div className='input-text'>
                         <label htmlFor='username'>Nombre de usuario</label>
-                        <input type={'text'} id='username' defaultValue={username} readOnly></input>
+                        <input className='form-control' type={'text'} id='username' defaultValue={username} readOnly></input>
                     </div>
                     <div className='input-text'>
                         <label htmlFor='nombre'>Nombre completo</label>
-                        <input type={'text'} defaultValue={dataUser.name} id='nombre' required></input>
+                        <input className='form-control' type={'text'} defaultValue={dataUser.name} id='nombre' required></input>
                     </div>
                     <div className='password-text'>
                         <label htmlFor='password'>Confirmar contraseña</label>
                         <div className='pass-ver'>
-                            <input ref={inputPassword}  type={'password'} id='password'></input> 
+                            <input className='form-control' ref={inputPassword}  type={'password'} id='password'></input> 
                         </div>
                     </div>
                     <div className='input-text'>
-                    <Button type='submit' variant='contained' className='editar'>Editar</Button> 
+                    <Button type='submit' variant='contained' className='editar' style={{"width":"100%"}}>Editar</Button> 
                     </div>           
                 </form>
             </div>

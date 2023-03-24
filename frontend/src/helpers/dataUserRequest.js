@@ -10,7 +10,8 @@ export const getDataUser = (username,setDataUser) =>{
         setDataUser({
             name:data[0].name||'',
             username:data[0].username||'',
-            picture_profile:data[0].picture_profile||''
+            picture_profile:data[0].picture_profile||'',
+            labels:data[0].labels.split(",")
         })
     })
 }
