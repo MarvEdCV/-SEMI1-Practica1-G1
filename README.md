@@ -14,7 +14,16 @@ Aplicación web similar a una aplicación para almacenamiento de fotos, esta per
 
 
 ## Descripcion de la arquitectura que utilizaron
-La arquitectura está diseñada para manejar cargas de trabajo de alta demanda y escalabilidad en AWS. Un balanceador de carga distribuye la carga de tráfico entrante entre las instancias EC2 en varias zonas de disponibilidad para garantizar la alta disponibilidad del sistema y se configura por la falla de cualquier instancia. Las instancias EC2 se utilizan para ejecutar los servidores y almacenar datos en el servicio S3 altamente escalable y duradero. se utilizaron dos Bucket de S3. Un bucket es de imagenes para almacenar todas las cargas de imagnes que se hagan mediande la pagina web, El otro bucket es el que almacena la pagina web dinamica. Además, la base de datos RDS se utiliza para almacenar datos estructurados y se conecta a las instancias EC2 para proporcionar un almacenamiento de datos confiable y escalable. Esta arquitectura asegura que los servicios sean altamente disponibles, escalables y seguros.
+
+La arquitectura propuesta en el proyecto utiliza varios servicios de AWS para implementar una aplicación web de almacenamiento de fotos que también utiliza tecnologías de Inteligencia Artificial para mejorar la experiencia del usuario.
+
+La aplicación se ejecuta en instancias de EC2 y utiliza Buckets de S3 para almacenar las fotos. También utiliza RDS como base de datos para almacenar información del usuario y de las fotos.
+
+Para la autenticación de los usuarios se utiliza el servicio IAM de AWS y se implementa la funcionalidad de inicio de sesión con el uso de la cámara web mediante el uso de Amazon Rekognition para comparar la foto del usuario con la foto de perfil actual. Además, se utilizan varios servicios de Inteligencia Artificial de AWS, como Amazon Lex para implementar un chatbot, Amazon Rekognition para analizar las fotos y agregar etiquetas, y Amazon Translate para traducir la descripción de la foto a varios idiomas.
+
+La arquitectura también incluye una sección para extraer texto de las fotos, una sección para subir fotos y una sección para ver fotos. Para clasificar automáticamente las fotos en álbumes, se utiliza el servicio Amazon Rekognition para obtener etiquetas relacionadas con cada foto.
+
+En resumen, la arquitectura utiliza varios servicios de AWS para implementar una aplicación web de almacenamiento de fotos que también utiliza tecnologías de Inteligencia Artificial para mejorar la experiencia del usuario.
 
 ## Usuarios IAM
 
@@ -25,6 +34,7 @@ Estos usuarios se utilizaron para crear la instancia de RDS, EC2 y el load balan
 ##### Políticas:
 
 - **AdministratorAccess**: La política de AWS AdministratorAccess es una política de seguridad que proporciona a los usuarios de AWS un acceso completo a todos los servicios y recursos de AWS. Esta política es una de las más poderosas de AWS, y solo se recomienda para usuarios altamente confiables que necesitan acceso total a todas las funciones de AWS.
+
 
 
 #### admin_s3
@@ -39,43 +49,126 @@ Estos usuarios se utilizaron para crear la instancia de RDS, EC2 y el load balan
 
 
 
-
-## AWS
-
-### Buckets de S3
-
-- #### Pagina Web
-
-[![RDS MYSQL](Imagenes/S3_Web.png)](https://nodesource.com/products/nsolid)
+#### admin_EC2
 
 
-- #### Imagenes
+##### Políticas:
 
-[![Balanceador de carga](Imagenes/S3_Imagenes.png)](https://nodesource.com/products/nsolid)
-
-
-### Instancias EC2
-
-- #### Server NodeJS
-
-[![EC2 Server Golang](Imagenes/EC2_NodeJS.png)](https://nodesource.com/products/nsolid)
-
-- #### Server Golang
-
-[![EC2 Server Golang](Imagenes/EC2_Golang.png)](https://nodesource.com/products/nsolid)
-
-### Balanceador de carga
-
-[![Balanceador de carga](Imagenes/LB.png)](https://nodesource.com/products/nsolid)
-
-### Instancia RDS
-
-[![RDS MYSQL](Imagenes/RDS.png)](https://nodesource.com/products/nsolid)
+- **AmazonEC2FullAccess**: Otorga a los usuarios permisos completos para administrar instancias de Amazon Elastic Compute Cloud (EC2). Esta política permite a los usuarios crear, modificar, detener y eliminar instancias de EC2, así como también acceder a sus respectivos registros y métricas. También otorga permisos para crear y administrar AMI (Amazon Machine Images), grupos de seguridad, volúmenes y snapshots de EBS (Elastic Block Store), entre otros recursos de EC2. Cabe destacar que esta política es bastante amplia y no es recomendable asignarla a usuarios a menos que realmente necesiten un acceso completo a los recursos de EC2.
 
 
-### Aplicacion Web
 
-[![RDS MYSQL](Imagenes/Web.png)](https://nodesource.com/products/nsolid)
+#### administrador_Translate
+
+
+##### Políticas:
+
+- **TranslateFullAccess**: Otorga a los usuarios permisos completos para usar y administrar Amazon Translate. Amazon Translate es un servicio de traducción de idiomas de AWS que permite a los usuarios traducir texto de un idioma a otro utilizando modelos de aprendizaje automático. La política TranslateFullAccess otorga a los usuarios permisos para crear, modificar y eliminar recursos de Amazon Translate, como proyectos, documentos y pares de idiomas. También permite a los usuarios acceder a las métricas y registros de los recursos de Amazon Translate. Al igual que la política AmazonEC2FullAccess, la política TranslateFullAccess es bastante amplia y solo debe ser asignada a usuarios que necesiten un acceso completo a los recursos de Amazon Translate.
+
+
+
+#### Administrador_rekognition
+
+
+##### Políticas:
+
+- **AmazonRekognitionFullAccess**: Es una política predefinida de AWS que otorga acceso completo a todos los servicios de Amazon Rekognition. Esto incluye acceso completo a todas las operaciones de API, como el reconocimiento de caras, el reconocimiento de texto en imágenes, la detección de objetos, la búsqueda de rostros, entre otras funcionalidades.
+
+Con esta política, los usuarios tendrán la capacidad de crear, administrar y eliminar colecciones de imágenes, así como realizar el análisis y procesamiento de imágenes utilizando las herramientas de Amazon Rekognition. Es importante destacar que esta política otorga un amplio nivel de acceso a los recursos de AWS, por lo que debe ser otorgada cuidadosamente y solo a usuarios confiables y autorizados que necesiten realizar tareas relacionadas con la visión por computadora y análisis de imágenes.
+
+- **AmazonS3FullAccess**: La política AmazonS3FullAccess es una política predefinida de AWS que otorga acceso completo a todos los recursos de Amazon S3 en una cuenta de AWS. En el proyecto nos da la funcionalidad de dar lectura al bucket de s3 para la obtencion de las fotos.
+
+
+
+#### administrador_lex
+
+
+##### Políticas:
+
+- **AmazonLexFullAccess**: La política de AmazonLexFullAccess proporciona acceso completo a los servicios de Amazon Lex y a todas las acciones permitidas en esos servicios. Con esta política, se puede crear y administrar bots de conversación utilizando Amazon Lex, así como también acceder a otros recursos de AWS que se requieren para crear y administrar bots, como IAM, CloudFormation, S3, Lambda, entre otros. En resumen, esta política permite a los usuarios tener control completo sobre todos los aspectos de los bots de conversación creados con Amazon Lex.
+
+
+
+
+## Descripción de las funcionalidades implementadas en el chatbot
+
+El bot esta basado en un respueta el cual almacena todas las posibles soluciones que le puede dar.  El bot esta capacitado para dar 18 posibles respuestas o 18 funcionalidades, el cual por fines de proyectos solo da una respuesta simple de que sera enviada la informacion, pero en esta respuesta simple se almacenan los datos completados anteriormente.
+
+### Entrada
+
+En interacciones de entrada se tienen las siguientes posibilidades:
+- hola
+- me gustaria pedir una solucion
+
+Al ecribi de estas posibles entradas el boto emepzara a preguntar y tomar informaciones:
+
+### Primera solicitud de información
+
+El ChatBot pregunta: Que tipo de solicitud te gustaria realizar: ¿fotos, inicio sesion ó detalle fotos?
+posibles respuestas del usuario:
+- fotos
+- inicio sesion
+- detalle fotos
+
+esta respuesta se almacena para luego dar otras posibles opciones.
+
+### Segunda solicitud de información
+
+el ChatBot pregutna: Tu como te identificas con el conocimiento de la aplicacion: ¿nuevo, administrador ó cliente?
+posibles respuestas del usuario:
+- nuevo
+- administrador
+- cliente
+
+esta respuesta se almacena para luego dar otras posibles opciones, porque de este punto ya se tien almacenado que posibles caminos le van a dar al usuario, en el siguiente paso se muestra.
+
+
+### Tercera solicitud de información
+
+el ChatBot pregutna: ¿Qué tipo de accion te gustaria solicitar?
+
+En este punto el bot tiene almacenado las respuestas de las dos solicitudes anteriores, asi que segun haya elejio. se le muestran 3 caminos por cada tipo de usuario. 
+
+posibles respuestas del usuario si su seleccion anterior fue cliente:
+- ver fotos
+- detalle de foto
+- extraer texto
+
+posibles respuestas del usuario si su seleccion anterior fue administrador:
+- albumes
+- foto perfil
+- comparar fotos
+
+posibles respuestas del usuario si su seleccion anterior fue nuevo:
+- inicio de sesion
+- inicio por camara
+- mi pefil
+
+Estas son las posibilidades que puede tener segun el tipo de adminitrador, si se escribe alguna que no este en ellas le volvera a preguntar.
+
+
+### Confirmacion
+
+luego de seleccionar lo anterior pasa a la confirmacion donde el bot pregunta: ¿Quieres que realice tu petición?
+hay dos posibilidades de respuesta:
+- si
+- no
+
+la salida es: 
+
+si la respuesta es si nos redirige a la salia o repsueta de cierra
+
+Si la respuesat es no, nos lanza la respuesta: Quédate con la duda, amigo.
+
+
+### Salida
+
+Como salida. solo muestra una salida general por fines de no profundizar en el chatBot ya que ese no es el fin del proyecto, pero los datos si estna almacenados pensados por si se le da seguimiento al bot. 
+
+la salida es: he hecho tu petición, en breves se te enviara informacion de lo solicitado.
+
+si algo sale mal la salida sera: Algo salió mal.
+
 
 ## Descripción de las funciones de Amazon Rekognition implementadas
 
