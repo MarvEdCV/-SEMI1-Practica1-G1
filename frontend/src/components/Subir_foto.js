@@ -93,6 +93,9 @@ const Subir_foto = (props) => {
             description
         }
         if(resolveArguments()){
+            toast.warning("Subiendo Foto!!", {
+                position: toast.POSITION.TOP_RIGHT
+              });
             postFetch(URLS.picture,request)
             .then((data)=>data.json())
             .then((data) =>{

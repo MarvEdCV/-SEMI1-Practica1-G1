@@ -56,6 +56,9 @@ const Editar_perfil = ({setUsername}) => {
         foto = foto64 !== "" ? foto64.split(",")[1] : ""
 
         //Se valida que la contraseña sea correcta
+        toast.warning("Editando Perfil!!", {
+            position: toast.POSITION.TOP_RIGHT
+          });
         postFetch(URLS.login,{username,password})
             .then((data) =>data.json())
             .then((data) =>{
