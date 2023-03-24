@@ -82,7 +82,11 @@ const Registro = () => {
                     {foto64 ? 
                         <img src={foto64} className='register-cam'></img>
                         :
-                        <Webcam ref={webcamRef} className='register-cam'/>
+                        <Webcam 
+                            ref={webcamRef} 
+                            className='register-cam' 
+                            screenshotFormat='image/jpeg'
+                        />
                     }
                     {foto64 ?
                         <Button onClick={()=>setFoto64("")} color="error">Volver a tomar foto</Button>
