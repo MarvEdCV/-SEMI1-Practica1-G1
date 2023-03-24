@@ -5,6 +5,8 @@ import { postFetch } from '../helpers/peticiones'
 import Webcam from "react-webcam";
 import { URLS } from '../helpers/routes';
 import FileBase64 from 'react-file-base64'
+import { ToastContainer, toast } from 'react-toastify';
+import "react-toastify/dist/ReactToastify.css";
 
 import './Login.css'
 
@@ -24,7 +26,9 @@ const Registro = () => {
         event.preventDefault();
 
         if(foto64 === ""){
-            alert("Para registrarse debe de tomarse una foto")
+            toast.error("Para registrarse debe de agregar una foto", {
+                position: toast.POSITION.TOP_RIGHT
+              });
             return
         }
 
@@ -37,7 +41,9 @@ const Registro = () => {
         picture = foto64.split(",")[1]
         console.log(picture)
         if(password !== passwordver){
-            alert("Las contraseñas no coinciden")
+            toast.error("Las contraseñas ingresadas no coinciden", {
+                position: toast.POSITION.TOP_RIGHT
+              });
             return
         }
 
@@ -54,19 +60,25 @@ const Registro = () => {
             .then((data)=> {
                 console.log(data)
                 if(Array.isArray(data)){
-                    if(data[0].successStatus === 1){
-                        alert("Usuario registrado exitosamente")
+                    if(data[0].successStatus === false){
+                        //alert("Error al crear el usuario. Ya existe un usuario con ese username.")
+                        toast.error("Error al crear el usuario. Ya existe un usuario con ese username.", {
+                            position: toast.POSITION.TOP_RIGHT
+                          });
+                        
+                    }
+                    toast.success("Usuario registrado exitosamente", {
+                        position: toast.POSITION.TOP_RIGHT
+                      });
+                    
                         navegar("/")
                         return
-                    }
-                    alert("Error al crear el usuario. Ya existe un usuario con ese username.")
+                   
                 }else{
-                    if(data.successStatus === 1){
-                        alert("Usuario registrado exitosamente")
-                        navegar("/")
-                        return
-                    }
-                    alert("Error al crear el usuario. Ya existe un usuario con ese username.")
+                    toast.error("Error al crear el usuario. Ya existe un usuario con ese username.", {
+                        position: toast.POSITION.TOP_RIGHT
+                      });
+                    
                 }
                
         }) 
@@ -78,6 +90,7 @@ const Registro = () => {
   return (
     <div className='login'>
         <div className='register'>
+        <ToastContainer />
             <div className='register-image'>  
                     {foto64 ? 
                         <img src={foto64} className='register-cam'></img>
@@ -112,10 +125,10 @@ const Registro = () => {
             <div className='login-form'>
                 <h1>Registrarse</h1>
                 <form className='login-form-input' onSubmit={handleSubmit}>
-                    <input id='username' placeholder='Username' required></input>
-                    <input id='nombre' placeholder='Nombre completo' required></input>
-                    <input type={'password'} id='password' placeholder='Contraseña' required></input>
-                    <input type={'password'} id='password-ver' placeholder='Verificar contraseña' required></input>
+                    <input className='form-control' id='username' placeholder='Username' required></input>
+                    <input className='form-control' id='nombre' placeholder='Nombre completo' required></input>
+                    <input className='form-control' type={'password'} id='password' placeholder='Contraseña' required></input>
+                    <input className='form-control' type={'password'} id='password-ver' placeholder='Verificar contraseña' required></input>
                     <div className='login-botones'>
                         <Button variant='contained' onClick={() => navegar('/')}>Login</Button> 
                         <Button type='submit' color='success' variant='contained'>Registrarse</Button>
