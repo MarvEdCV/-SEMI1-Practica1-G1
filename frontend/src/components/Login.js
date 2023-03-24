@@ -6,6 +6,7 @@ import { Button } from '@mui/material'
 import './Login.css'
 import { URLS, url_servidor } from '../helpers/routes'
 import { postFetch } from '../helpers/peticiones'
+import { toast, ToastContainer } from 'react-toastify'
 
 const Login = (props) => {
   //useNavigate para cambiar la url para cargar otros componentes
@@ -33,26 +34,38 @@ const Login = (props) => {
         console.log(data)
         if(data.successStatus === true){
           props.setUsername(username)
-          navegar(`home/${username}`)
+          navegar(`/home/${username}`)
         }else{
-          alert(data.errorMessage)
+          toast.error(data.errorMessage, {
+            position: toast.POSITION.TOP_RIGHT
+          });
+          console.log(data)
           //Se vacian los input
           event.target[0].value = ""
           event.target[1].value = ""
         }
       })
+      .catch((error)=>{
+        toast.error("Hubo un error al iniciar sesion", {
+          position: toast.POSITION.TOP_RIGHT
+        });
+      })
   }
 
   return (
     <div className='login'>
+      <ToastContainer />
       <div className='login-form'>
         <h1>Iniciar sesion</h1>
         <form className='login-form-input' onSubmit={handleSubmit}>
-          <input id='username' placeholder='Username'></input>
-          <input id='password' type={'password'} placeholder='Contraseña'></input>
+          <input  className='form-control' id='username' placeholder='Username'></input>
+          <input  className='form-control' id='password' type={'password'} placeholder='Contraseña'></input>
           <div className='login-botones'>
             <Button variant='contained' onClick={() => navegar('/registro')}>Registrarse</Button>
-            <Button type='submit' variant='contained'>Ingresar</Button>
+            <Button type='submit' variant='contained' color='success' >Ingresar</Button>
+          </div>
+          <div>
+            <Button onClick={() => navegar('/login-camara')}>Iniciar sesion con reconocimiento facial</Button>
           </div>
         </form>
       </div>

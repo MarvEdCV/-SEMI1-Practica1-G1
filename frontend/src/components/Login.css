@@ -1,3 +1,5 @@
+
+/*----------------------------LOGIN------------------------------*/
 .login{
     display: flex;
     position: absolute;
@@ -14,7 +16,7 @@
     justify-content: center;
     width: 30vw;
     height: 70vh;
-    background-color: aqua;
+    background-color: rgb(224, 228, 228);
     text-align: center;
     border-radius: 3rem;
 }
@@ -42,9 +44,18 @@
     width: 48%;
 }
 
+/*----------------------LOGIN RECONOCIMIENTO------------------------*/
+.login-form-input.login-camara{
+    height: 80%;
+}
+
+.login-cam{
+    width: 70%;
+}
 
 
 
+/*----------------------------REGISTRO------------------------------*/
 .register{
     display: flex;
     width: 60%;
