@@ -76,3 +76,17 @@ Estos usuarios se utilizaron para crear la instancia de RDS, EC2 y el load balan
 ### Aplicacion Web
 
 [![RDS MYSQL](Imagenes/Web.png)](https://nodesource.com/products/nsolid)
+
+## Descripción de las funciones de Amazon Rekognition implementadas
+
+### Compare Faces
+
+Esta funcionalidad permite comparar dos imágenes y determinar si contienen la misma persona. En términos más técnicos, la función compara los rostros detectados en cada imagen y devuelve una puntuación de similitud. Esto puede ser útil en aplicaciones de autenticación, seguridad o para encontrar imágenes similares en grandes colecciones de fotos.
+
+### Detect Labels
+
+Esta función permite detectar objetos y escenas en imágenes. La función analiza la imagen y devuelve una lista de etiquetas que describen los objetos y las escenas que se encuentran en la imagen. Esto puede ser útil en aplicaciones de búsqueda y clasificación de imágenes, así como en aplicaciones de reconocimiento visual, como la identificación de objetos en tiempo real en videos de vigilancia.
+
+### Detect Text 
+
+Esta función permite detectar y extraer texto de imágenes. La función utiliza técnicas de aprendizaje profundo para identificar regiones de la imagen que contienen texto, y luego reconoce los caracteres individuales para proporcionar el texto completo. Esto puede ser útil en aplicaciones de OCR (reconocimiento óptico de caracteres), como la digitalización de documentos impresos o la captura de información de tarjetas de crédito en imágenes de recibos.
