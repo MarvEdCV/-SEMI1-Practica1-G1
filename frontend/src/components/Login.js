@@ -58,11 +58,11 @@ const Login = (props) => {
       <div className='login-form'>
         <h1>Iniciar sesion</h1>
         <form className='login-form-input' onSubmit={handleSubmit}>
-          <input id='username' placeholder='Username'></input>
-          <input id='password' type={'password'} placeholder='Contraseña'></input>
+          <input  className='form-control' id='username' placeholder='Username'></input>
+          <input  className='form-control' id='password' type={'password'} placeholder='Contraseña'></input>
           <div className='login-botones'>
             <Button variant='contained' onClick={() => navegar('/registro')}>Registrarse</Button>
-            <Button type='submit' variant='contained'>Ingresar</Button>
+            <Button type='submit' variant='contained' color='success' >Ingresar</Button>
           </div>
           <div>
             <Button onClick={() => navegar('/login-camara')}>Iniciar sesion con reconocimiento facial</Button>

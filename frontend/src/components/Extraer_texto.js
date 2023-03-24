@@ -39,6 +39,7 @@ const Extraer_texto = (props) => {
     }, [])
 
     const resolveArguments = () => {
+
         if(filename.trim() == ''){
           toast.error("Debe de seleccionar una imagene", {
             position: toast.POSITION.TOP_RIGHT
@@ -62,7 +63,11 @@ const Extraer_texto = (props) => {
         const body = {
             picture
         }
+        
         if(resolveArguments()){
+            toast.warning("Analizando imagen para extraer texto!!", {
+                position: toast.POSITION.TOP_RIGHT
+              });
             postFetch(URLS.extract_text,body)
                 .then((data) => data.json())
                 .then((data)=>{
@@ -100,12 +105,17 @@ const Extraer_texto = (props) => {
                                 } type="file" />
                             </div>
                         </Button> 
+                        <br></br>
+                        
                         <img className='image-extract' src={foto64}></img>   
+                       
+                       
+                        <br></br>
                     </div>
                     <Button onClick={extractText} variant="contained" component="label"style={{"marginTop":"30px"}} >
                         Extraer texto
                     </Button>
-                    <textarea  className='extracted-text' value = {textoExtraido} type={'text'} readOnly></textarea>
+                    <textarea  className='extracted-text form-control' value = {textoExtraido} type={'text'} readOnly></textarea>
                 </div>
             </div>
         </div>

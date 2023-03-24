@@ -30,8 +30,8 @@ function App() {
         <Route path={`/descripcion-foto/:username/:picture_id`} element={[<SideMenu username={username}/>,<Descripcion_foto setUsername={setUsername}/>]}/>
         <Route path={`/extraer-texto/:username`} element={[<SideMenu username={username}/>,<Extraer_texto setUsername={setUsername}/>]}/>
         <Route path={`/editar-albumes/:username`} element={[<SideMenu username={username}/>,<EditarAlbumes setUsername={setUsername}/>]}/>
-        <Route path={`/boot/:username`} element={[<SideMenu username={username}/>,<Boot setUsername={setUsername}/>]}/>
       </Routes>
+      <Boot></Boot>
     </div>
   );
 }

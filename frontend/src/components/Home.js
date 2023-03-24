@@ -4,6 +4,7 @@ import "./Home.css"
 import Perfil from './Perfil'
 import { useParams } from 'react-router-dom'
 import { getDataUser } from '../helpers/dataUserRequest'
+import Boot from './Boot'
 
 
 
@@ -36,6 +37,7 @@ const Home = (props) => {
                     <li>{etiqueta}</li>
                 ))}
             </ul>
+            <Boot></Boot>
         </div>
         </div>
         <div className='contenedor-der'>

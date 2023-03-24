@@ -136,7 +136,7 @@ const Subir_foto = (props) => {
                     </div>
                     <div className='input-text'>
                         <label htmlFor='foto_nombre' >Nombre de la foto</label>
-                        <input className='form-control'value={filename} type={'text'} id='foto_nombre' name='foto_nombre'></input>
+                        <input className='form-control' value={filename} type={'text'} id='foto_nombre' name='foto_nombre'></input>
                     </div>
                     <div  className='input-text'>
                         <label htmlFor='album'>Descripción</label>
