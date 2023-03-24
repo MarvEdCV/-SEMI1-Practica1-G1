@@ -1,4 +1,4 @@
-export const url_servidor = "http://localhost:3010/api";
+export const url_servidor = "http://3.15.164.81:3010/api";
 
 export const URLS = {
   user: `${url_servidor}/user`,

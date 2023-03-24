@@ -46,6 +46,7 @@ const Login = (props) => {
         }
       })
       .catch((error)=>{
+        console.log(error)
         toast.error("Hubo un error al iniciar sesion", {
           position: toast.POSITION.TOP_RIGHT
         });
